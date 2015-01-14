@@ -5,7 +5,7 @@
  * @constructor
  */
 function Wear(where, stats) {
-	if(where) this._where = where;
+	if(!where && !stats) return;
 
 	if(stats) {
 		for(var stat in stats) {
