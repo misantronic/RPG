@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>Game</title>
+</head>
+<body>
+	<script src="js/people/Human.js"></script>
+	<script src="js/people/Merc.js"></script>
+
+	<script src="js/items/Item.js"></script>
+	<script src="js/items/Wear.js"></script>
+	<script src="js/items/wear/SteelHelmet.js"></script>
+	<script src="js/items/wear/KevlarHelmet.js"></script>
+	<script>
+		var shadow = new Merc({
+			health: 95,
+			agility: 96,
+			dexterity: 83,
+			strength: 88,
+			leadership: 35,
+			wisdom: 77,
+			level: 5,
+			marksmanship: 92,
+			explosives: 22,
+			mecanical: 35,
+			medical: 30
+		}, 'Kyle Simmons', 'Shadow');
+
+		var steelHelmet 	= new SteelHelmet();
+		var kevlarHelmet 	= new KevlarHelmet();
+
+		console.log(kevlarHelmet.armor);
+		console.log(steelHelmet.armor);
+
+		shadow.putOn(steelHelmet);
+
+		//shadow.takeOff(steelHelmet);
+	</script>
+</body>
+</html>
