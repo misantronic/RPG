@@ -1,0 +1,24 @@
+{
+  "name": "RPG",
+  "version": "0.0.1",
+  "homepage": "https://github.com/misantronic/RPG",
+  "authors": [
+    "misantronic <david.skx@posteo.de>"
+  ],
+  "description": "Game.",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "minc": "~0.6.3"
+  }
+}
