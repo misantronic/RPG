@@ -72,10 +72,6 @@ Human.prototype.takeOff = function(wear) {
 	return item;
 };
 
-Human.prototype.getWeight = function() {
-
-}
-
 // GETTER / SETTER
 
 Object.defineProperty(Human.prototype, "weightInKG", {
