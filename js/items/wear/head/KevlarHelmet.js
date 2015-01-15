@@ -4,7 +4,8 @@
  */
 function KevlarHelmet() {
 	Wear.call(this, Human.HEAD, {
-		armor: 75
+		armor: 60,
+		weight: 0.5
 	});
 }
 

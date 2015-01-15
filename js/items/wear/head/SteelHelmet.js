@@ -4,7 +4,8 @@
  */
 function SteelHelmet() {
 	Wear.call(this, Human.HEAD, {
-		armor: 40
+		armor: 40,
+		weight: 0.4
 	});
 }
 

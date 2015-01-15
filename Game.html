@@ -8,16 +8,16 @@
 	<script src="bower_components/minc/src/minc.min.js"></script>
 	<script>
 		Minc([
-				 'js/people/Human.js',
-				 'js/people/Merc.js',
-				 'js/items/Item.js',
-				 'js/items/Wear.js',
-				 'js/items/wear/SteelHelmet.js',
-				 'js/items/wear/KevlarHelmet.js'
+                'js/people/Human.js',
+                'js/people/Merc.js',
+                'js/items/Item.js',
+                'js/items/Wear.js',
+                'js/items/wear/head/SteelHelmet.js',
+                'js/items/wear/head/KevlarHelmet.js'
 			 ]).done(init);
 
 		function init() {
-			var shadow = new Merc({
+			window.shadow = new Merc({
 				health: 95,
 				agility: 96,
 				dexterity: 83,
@@ -34,11 +34,9 @@
 			var steelHelmet 	= new SteelHelmet();
 			var kevlarHelmet 	= new KevlarHelmet();
 
-			console.log(kevlarHelmet.armor);
-			console.log(steelHelmet.armor);
-
 			shadow.putOn(steelHelmet);
 
+			//console.log(shadow);
 			//shadow.takeOff(steelHelmet);
 		}
 	</script>
