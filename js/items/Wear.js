@@ -7,6 +7,7 @@
 function Wear(type, stats) {
 	if(!type && !stats) return;
 
+	// reset
 	this._stats = {};
 
 	this._type = type;

@@ -7,7 +7,14 @@
  */
 function Human(stats, name, nickname) {
 	if(stats) {
+
+		// reset
 		this._stats = {};
+		this._inventory = {
+			sm: [],
+			md: [],
+			lg: []
+		};
 
 		for(var stat in stats) {
 			if(stats.hasOwnProperty(stat)) {

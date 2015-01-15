@@ -7,6 +7,7 @@
 function Ammo(type, stats) {
 	if(!type) return;
 
+	// reset
 	this._stats = {};
 
 	this._type = type;
