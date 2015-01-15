@@ -39,9 +39,9 @@ Human.prototype = {
 	},
 
 	_wear: {
-		head: '',
-		body: '',
-		legs: ''
+		head: new Wear(),
+		body: new Wear(),
+		legs: new Wear()
 	},
 
 	_ap: 0,
@@ -72,7 +72,18 @@ Human.prototype.takeOff = function(wear) {
 	return item;
 };
 
+Human.prototype.getWeight = function() {
+
+}
+
 // GETTER / SETTER
+
+Object.defineProperty(Human.prototype, "weight", {
+	get: function () {
+		console.log(this._wear.legs);
+		return this._wear.head.weight + this._wear.body.weight + this._wear.legs.weight;
+	}
+});
 
 Object.defineProperty(Human.prototype, "name", {
 	get: function () {
