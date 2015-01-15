@@ -5,37 +5,42 @@
 	<title>Game</title>
 </head>
 <body>
-	<script src="js/people/Human.js"></script>
-	<script src="js/people/Merc.js"></script>
-
-	<script src="js/items/Item.js"></script>
-	<script src="js/items/Wear.js"></script>
-	<script src="js/items/wear/SteelHelmet.js"></script>
-	<script src="js/items/wear/KevlarHelmet.js"></script>
+	<script src="bower_components/minc/src/minc.min.js"></script>
 	<script>
-		var shadow = new Merc({
-			health: 95,
-			agility: 96,
-			dexterity: 83,
-			strength: 88,
-			leadership: 35,
-			wisdom: 77,
-			level: 5,
-			marksmanship: 92,
-			explosives: 22,
-			mecanical: 35,
-			medical: 30
-		}, 'Kyle Simmons', 'Shadow');
+		Minc([
+				 'js/people/Human.js',
+				 'js/people/Merc.js',
+				 'js/items/Item.js',
+				 'js/items/Wear.js',
+				 'js/items/wear/SteelHelmet.js',
+				 'js/items/wear/KevlarHelmet.js'
+			 ]).done(init);
 
-		var steelHelmet 	= new SteelHelmet();
-		var kevlarHelmet 	= new KevlarHelmet();
+		function init() {
+			var shadow = new Merc({
+				health: 95,
+				agility: 96,
+				dexterity: 83,
+				strength: 88,
+				leadership: 35,
+				wisdom: 77,
+				level: 5,
+				marksmanship: 92,
+				explosives: 22,
+				mecanical: 35,
+				medical: 30
+			}, 'Kyle Simmons', 'Shadow');
 
-		console.log(kevlarHelmet.armor);
-		console.log(steelHelmet.armor);
+			var steelHelmet 	= new SteelHelmet();
+			var kevlarHelmet 	= new KevlarHelmet();
 
-		shadow.putOn(steelHelmet);
+			console.log(kevlarHelmet.armor);
+			console.log(steelHelmet.armor);
 
-		//shadow.takeOff(steelHelmet);
+			shadow.putOn(steelHelmet);
+
+			//shadow.takeOff(steelHelmet);
+		}
 	</script>
 </body>
 </html>
