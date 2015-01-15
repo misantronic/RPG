@@ -8,12 +8,13 @@
 	<script src="bower_components/minc/src/minc.min.js"></script>
 	<script>
 		Minc([
+				'js/items/Item.js',
+				'js/items/Wear.js',
+				'js/items/wear/head/SteelHelmet.js',
+				'js/items/wear/body/KevlarWest.js',
+				'js/items/wear/legs/KevlarShorts.js',
                 'js/people/Human.js',
-                'js/people/Merc.js',
-                'js/items/Item.js',
-                'js/items/Wear.js',
-                'js/items/wear/head/SteelHelmet.js',
-                'js/items/wear/head/KevlarHelmet.js'
+                'js/people/Merc.js'
 			 ]).done(init);
 
 		function init() {
@@ -32,9 +33,12 @@
 			}, 'Kyle Simmons', 'Shadow');
 
 			var steelHelmet 	= new SteelHelmet();
-			var kevlarHelmet 	= new KevlarHelmet();
+			var kevlarWest 		= new KevlarWest();
+			var kevlarShorts 	= new KevlarShorts();
 
 			shadow.putOn(steelHelmet);
+			shadow.putOn(kevlarWest);
+			shadow.putOn(kevlarShorts);
 
 			//console.log(shadow);
 			//shadow.takeOff(steelHelmet);
