@@ -89,20 +89,12 @@ Object.defineProperty(Human.prototype, "weightInPerc", {
 Object.defineProperty(Human.prototype, "name", {
 	get: function () {
 		return this._name;
-	},
-
-	set: function(val) {
-		this._name = val;
 	}
 });
 
 Object.defineProperty(Human.prototype, "nickname", {
 	get: function () {
 		return this._nickname;
-	},
-
-	set: function(val) {
-		this._nickname = val;
 	}
 });
 
