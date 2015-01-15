@@ -8,13 +8,28 @@
 	<script src="bower_components/minc/src/minc.min.js"></script>
 	<script>
 		Minc([
+				// items
 				'js/items/Item.js',
 				'js/items/Wear.js',
+				'js/items/Ammo.js',
+				'js/items/Weapon.js',
+
+				// people
+                'js/people/Human.js',
+                'js/people/Merc.js',
+
+				// Wear
 				'js/items/wear/head/SteelHelmet.js',
 				'js/items/wear/body/KevlarWest.js',
 				'js/items/wear/legs/KevlarShorts.js',
-                'js/people/Human.js',
-                'js/people/Merc.js'
+
+				// Ammo
+				'js/items/ammo/9mm.js',
+				'js/items/ammo/5.56mm.js',
+
+				// Weapons
+				'js/items/weapons/pistol/Beretta_92F.js',
+				'js/items/weapons/assault_rifle/Colt_Commando.js'
 			 ]).done(init);
 
 		function init() {
@@ -32,13 +47,15 @@
 				medical: 30
 			}, 'Kyle Simmons', 'Shadow');
 
-			var steelHelmet 	= new SteelHelmet();
-			var kevlarWest 		= new KevlarWest();
-			var kevlarShorts 	= new KevlarShorts();
-
-			shadow.putOn(steelHelmet);
-			shadow.putOn(kevlarWest);
-			shadow.putOn(kevlarShorts);
+			shadow
+				.equip(new SteelHelmet())
+				.equip(new KevlarWest())
+				.equip(new KevlarShorts())
+				.equip(new Beretta_92F())
+				.equip(new Colt_Commando())
+				.equip(new $5_56MM())
+				.equip(new $9MM())
+				.equip(new $9MM());
 
 			console.log(shadow);
 		}

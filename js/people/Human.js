@@ -54,15 +54,16 @@ Human.prototype = {
 	_moral: 0
 };
 
-Human.HEAD = 'head';
-Human.BODY = 'body';
-Human.LEGS = 'legs';
-
 /**
  *
  * @param {Wear} wear
  */
 Human.prototype.putOn = function(wear) {
+	if(!(wear instanceof Wear)) {
+		console.warn(wear, "must be an instance of Wear().");
+		return;
+	}
+
 	var item = this._wear[wear.type];
 	this._wear[wear.type] = wear;
 	return item;
@@ -83,7 +84,14 @@ Human.prototype.takeOff = function(wear) {
  * @param {Item} item
  */
 Human.prototype.equip = function(item) {
+	if(!(item instanceof Item)) {
+		console.warn(item, "must be an instance of Wear().");
+		return;
+	}
 
+	this._inventory[item.size].push(item);
+
+	return this;
 };
 
 // GETTER / SETTER
@@ -245,5 +253,11 @@ Object.defineProperty(Human.prototype, "moral", {
 Object.defineProperty(Human.prototype, "wear", {
 	get: function () {
 		return this._wear;
+	}
+});
+
+Object.defineProperty(Human.prototype, "inventory", {
+	get: function () {
+		return this._inventory;
 	}
 });

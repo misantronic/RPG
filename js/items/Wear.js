@@ -1,6 +1,6 @@
 /**
  *
- * @param {String} [type] {Human.HEAD|Human.BODY|Human.LEGS}
+ * @param {String} [type] {Wear.HEAD|Wear.BODY|Wear.LEGS}
  * @param {Object} [stats]
  * @constructor
  */
@@ -23,22 +23,15 @@ function Wear(type, stats) {
 Wear.prototype = new Item();
 Wear.constructor = Wear;
 
-Wear.prototype._type = '';
 Wear.prototype._stats = {
 	armor: 0
 };
 
+Wear.HEAD = 'head';
+Wear.BODY = 'body';
+Wear.LEGS = 'legs';
+
 // GETTER / SETTER
-
-Object.defineProperty(Wear.prototype, "type", {
-	get: function () {
-		return this._type;
-	},
-
-	set: function(val) {
-		this._type = val;
-	}
-});
 
 Object.defineProperty(Wear.prototype, "armor", {
 	get: function () {
