@@ -1,16 +1,20 @@
 /**
  *
- * @param {String} where {Human.HEAD|Human.BODY|Human.LEGS}
+ * @param {String} type {Human.HEAD|Human.BODY|Human.LEGS}
  * @param {Object} stats
  * @constructor
  */
-function Wear(where, stats) {
-	if(!where && !stats) return;
+function Wear(type, stats) {
+	if(!type && !stats) return;
+
+	this._stats = {};
+
+	this._type = type;
 
 	if(stats) {
 		for(var stat in stats) {
-			if(stats.hasOwnProperty(stat) && this[stat] !== undefined) {
-				this._stats[stat] = stats[stat];
+			if(stats.hasOwnProperty(stat)) {
+				this[stat] = stats[stat];
 			}
 		}
 	}
@@ -19,20 +23,20 @@ function Wear(where, stats) {
 Wear.prototype = new Item();
 Wear.constructor = Wear;
 
-Wear.prototype._where = '';
+Wear.prototype._type = '';
 Wear.prototype._stats = {
 	armor: 0
 };
 
 // GETTER / SETTER
 
-Object.defineProperty(Wear.prototype, "where", {
+Object.defineProperty(Wear.prototype, "type", {
 	get: function () {
-		return this._where;
+		return this._type;
 	},
 
 	set: function(val) {
-		this._where = val;
+		this._type = val;
 	}
 });
 

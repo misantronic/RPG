@@ -7,8 +7,10 @@
  */
 function Human(stats, name, nickname) {
 	if(stats) {
+		this._stats = {};
+
 		for(var stat in stats) {
-			if(stats.hasOwnProperty(stat) && this[stat] !== undefined) {
+			if(stats.hasOwnProperty(stat)) {
 				this[stat] = stats[stat];
 			}
 		}
@@ -37,9 +39,9 @@ Human.prototype = {
 	},
 
 	_wear: {
-		head: [],
-		body: [],
-		legs: []
+		head: '',
+		body: '',
+		legs: ''
 	},
 
 	_ap: 0,
@@ -52,22 +54,22 @@ Human.LEGS = 'legs';
 
 /**
  *
- * @param {Wear} what
+ * @param {Wear} wear
  */
-Human.prototype.putOn = function(what) {
-	if(this._wear[what.where]) this._wear[what.where].push(what);
+Human.prototype.putOn = function(wear) {
+	var item = this._wear[wear.type];
+	this._wear[wear.type] = wear;
+	return item;
 };
 
 /**
  *
- * @param {Wear} what
+ * @param {Wear} wear
  */
-Human.prototype.takeOff = function(what) {
-	this._wear[what.where].forEach(function(wear, i) {
-		if(wear === what) {
-			this._wear[what.where].splice(i, 1);
-		}
-	}.bind(this));
+Human.prototype.takeOff = function(wear) {
+	var item = this._wear[wear.type];
+	this._wear[wear.type] = '';
+	return item;
 };
 
 // GETTER / SETTER
