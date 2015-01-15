@@ -1,7 +1,7 @@
 /**
  *
- * @param {String} type {Human.HEAD|Human.BODY|Human.LEGS}
- * @param {Object} stats
+ * @param {String} [type] {Human.HEAD|Human.BODY|Human.LEGS}
+ * @param {Object} [stats]
  * @constructor
  */
 function Wear(type, stats) {
