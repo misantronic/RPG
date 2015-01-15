@@ -44,6 +44,12 @@ Human.prototype = {
 		legs: new Wear()
 	},
 
+	_inventory: {
+		sm: [],
+		md: [],
+		lg: []
+	},
+
 	_ap: 0,
 	_moral: 0
 };
@@ -70,6 +76,14 @@ Human.prototype.takeOff = function(wear) {
 	var item = this._wear[wear.type];
 	this._wear[wear.type] = '';
 	return item;
+};
+
+/**
+ *
+ * @param {Item} item
+ */
+Human.prototype.equip = function(item) {
+
 };
 
 // GETTER / SETTER
