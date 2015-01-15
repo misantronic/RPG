@@ -15,6 +15,10 @@ function Human(stats, name, nickname) {
 			md: [],
 			lg: []
 		};
+		this._hands = {
+			left: new Item(),
+			right: new Item()
+		};
 
 		for(var stat in stats) {
 			if(stats.hasOwnProperty(stat)) {
@@ -51,6 +55,11 @@ Human.prototype = {
 		legs: new Wear()
 	},
 
+	_hands: {
+		left: new Item(),
+		right: new Item()
+	},
+
 	_inventory: {
 		sm: [],
 		md: [],
@@ -71,9 +80,9 @@ Human.prototype.putOn = function(wear) {
 		return;
 	}
 
-	var item = this._wear[wear.type];
 	this._wear[wear.type] = wear;
-	return item;
+
+	return this;
 };
 
 /**
@@ -81,22 +90,34 @@ Human.prototype.putOn = function(wear) {
  * @param {Wear} wear
  */
 Human.prototype.takeOff = function(wear) {
-	var item = this._wear[wear.type];
 	this._wear[wear.type] = '';
-	return item;
+
+	return this;
 };
 
 /**
  *
  * @param {Item} item
  */
-Human.prototype.equip = function(item) {
+Human.prototype.give = function(item) {
 	if(!(item instanceof Item)) {
 		console.warn(item, "must be an instance of Wear().");
 		return;
 	}
 
 	this._inventory[item.size].push(item);
+
+	return this;
+};
+
+/**
+ *
+ * @param {Item} item
+ * @param {String} hand {left|right}
+ */
+Human.prototype.equip = function(item, hand) {
+	if(hand == 'left' || hand == 'right')
+		this._hands[hand] = item;
 
 	return this;
 };
@@ -111,7 +132,7 @@ Object.defineProperty(Human.prototype, "weightInKG", {
 
 Object.defineProperty(Human.prototype, "weightInPerc", {
 	get: function () {
-		return Math.round(this.weight / this.strength * 100);
+		return Math.round(this.weightInKG / this.strength * 100);
 	}
 });
 
