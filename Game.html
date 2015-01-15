@@ -30,7 +30,8 @@
 				// Weapons
 				'js/items/weapons/pistol/Beretta_92F.js',
 				'js/items/weapons/assault_rifle/Colt_Commando.js'
-			 ]).done(init);
+			 ]
+		).done(init);
 
 		function init() {
 			window.shadow = new Merc({
@@ -47,15 +48,21 @@
 				medical: 30
 			}, 'Kyle Simmons', 'Shadow');
 
+			var helmet 	= new SteelHelmet();
+			var west 	= new KevlarWest();
+			var shorts 	= new KevlarShorts();
+			var colt 	= new Colt_Commando();
+
 			shadow
-				.equip(new SteelHelmet())
-				.equip(new KevlarWest())
-				.equip(new KevlarShorts())
-				.equip(new Beretta_92F())
-				.equip(new Colt_Commando())
-				.equip(new $5_56MM())
-				.equip(new $9MM())
-				.equip(new $9MM());
+				.give(helmet)
+				.give(west)
+				.give(shorts)
+				.give(new Beretta_92F())
+				.give(colt)
+				.give(new $5_56MM())
+				.give(new $9MM())
+				.give(new $9MM())
+				.equip(colt, 'right');
 
 			console.log(shadow);
 		}
