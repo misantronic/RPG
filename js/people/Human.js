@@ -86,7 +86,7 @@ Object.defineProperty(Human.prototype, "weight", {
 
 Object.defineProperty(Human.prototype, "weightPerc", {
 	get: function () {
-		return Math.round(this.weight / this.strength * 100) / 100;
+		return Math.round(this.weight / this.strength * 100);
 	}
 });
 
