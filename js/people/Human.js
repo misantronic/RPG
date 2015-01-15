@@ -80,8 +80,13 @@ Human.prototype.getWeight = function() {
 
 Object.defineProperty(Human.prototype, "weight", {
 	get: function () {
-		console.log(this._wear.legs);
 		return this._wear.head.weight + this._wear.body.weight + this._wear.legs.weight;
+	}
+});
+
+Object.defineProperty(Human.prototype, "weightPerc", {
+	get: function () {
+		return Math.round(this.weight / this.strength * 100) / 100;
 	}
 });
 
