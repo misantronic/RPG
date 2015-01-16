@@ -92,7 +92,7 @@ Human.prototype.takeOff = function(wear) {
  *
  * @param {Item} item
  */
-Human.prototype.give = function(item) {
+Human.prototype.equip = function(item) {
 	if(!(item instanceof Item)) {
 		console.warn(item, "must be an instance of Item().");
 		return;
@@ -107,7 +107,7 @@ Human.prototype.give = function(item) {
  *
  * @param {Item} item
  */
-Human.prototype.equip = function(item) {
+Human.prototype.grab = function(item) {
 	if(this._hands.length == 2) return;
 	for(var i=0; i < this._hands.length; i++) {
 		/** @type {Item} handItem */
