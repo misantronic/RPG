@@ -35,23 +35,12 @@
 		).done(init);
 
 		function init() {
-			window.shadow = new Shadow();
+			window.shadow = new Shadow(true);
 
 			var helmet 	= new SteelHelmet();
 			var west 	= new KevlarWest();
 			var shorts 	= new KevlarShorts();
 			var colt 	= new Colt_Commando();
-
-			shadow
-				.equip(helmet)
-				.equip(west)
-				.equip(shorts)
-				.equip(new Beretta_92F())
-				.equip(colt)
-				.equip(new $5_56MM())
-				.equip(new $9MM())
-				.equip(new $9MM())
-				.grab(colt);
 
 			console.log(shadow);
 		}
