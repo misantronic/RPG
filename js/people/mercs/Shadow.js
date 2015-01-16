@@ -1,5 +1,7 @@
 function Shadow(equip) {
 	Merc.call(this, {
+		name: 'Kyle Simmons',
+		nickname: 'Shadow',
 		health: 95,
 		agility: 96,
 		dexterity: 83,
@@ -11,7 +13,7 @@ function Shadow(equip) {
 		explosives: 22,
 		mecanical: 35,
 		medical: 30
-	}, 'Kyle Simmons', 'Shadow');
+	});
 
 	if(equip) {
 		var helmet 	= new SteelHelmet();

@@ -1,5 +1,5 @@
-function Merc(stats, name, nickname) {
-	Human.call(this, stats, name, nickname);
+function Merc(stats) {
+	Human.call(this, stats);
 }
 
 Merc.prototype = new Human();

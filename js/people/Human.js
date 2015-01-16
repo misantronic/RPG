@@ -1,11 +1,9 @@
 /**
  *
  * @param {Object} [stats]
- * @param {String} [name]
- * @param {String} [nickname]
  * @constructor
  */
-function Human(stats, name, nickname) {
+function Human(stats) {
 	if(stats) {
 		// reset
 		this._stats = {};
@@ -22,9 +20,6 @@ function Human(stats, name, nickname) {
 			}
 		}
 	}
-
-	if(name) this._name = name;
-	if(nickname) this._nickname = nickname;
 }
 
 Human.prototype = {
@@ -128,8 +123,9 @@ Human.prototype.grab = function(item) {
 
 Object.defineProperty(Human.prototype, "weightInKG", {
 	get: function () {
-		/** @type {Item} item **/
-		var weight = 0, item;
+		var weight = 0,
+			/** @type {Item} item **/
+			item;
 		[ Item.SMALL, Item.MEDIUM, Item.LARGE].forEach(function(type) {
 			for(var i=0; i < this._inventory[type].length; i++) {
 				item = this._inventory[type][i];
@@ -150,12 +146,20 @@ Object.defineProperty(Human.prototype, "weightInPerc", {
 Object.defineProperty(Human.prototype, "name", {
 	get: function () {
 		return this._name;
+	},
+
+	set: function(val) {
+		this._name = val;
 	}
 });
 
 Object.defineProperty(Human.prototype, "nickname", {
 	get: function () {
 		return this._nickname;
+	},
+
+	set: function(val) {
+		this._nickname = val;
 	}
 });
 
