@@ -54,6 +54,8 @@ Human.prototype = {
 		lg: []
 	},
 
+	_thumb: Image,
+
 	_ap: 0,
 	_moral: 0
 };
@@ -133,8 +135,6 @@ Human.prototype.grab = function(item) {
 	return this;
 };
 
-// GETTER / SETTER
-
 Object.defineProperty(Human.prototype, "weightInKG", {
 	get: function () {
 		var weight = 0,
@@ -154,6 +154,20 @@ Object.defineProperty(Human.prototype, "weightInKG", {
 Object.defineProperty(Human.prototype, "weightInPerc", {
 	get: function () {
 		return Math.round(this.weightInKG / this.strength * 100);
+	}
+});
+
+// GETTER / SETTER
+
+Object.defineProperty(Human.prototype, "thumb", {
+	get: function () {
+		return this._thumb;
+	},
+
+	set: function(val) {
+		var img = new Image();
+		img.src = val;
+		this._thumb = img;
 	}
 });
 
