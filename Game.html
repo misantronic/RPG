@@ -17,6 +17,7 @@
 				// people
                 'js/people/Human.js',
                 'js/people/Merc.js',
+                'js/people/mercs/Shadow.js',
 
 				// Wear
 				'js/items/wear/head/SteelHelmet.js',
@@ -34,19 +35,7 @@
 		).done(init);
 
 		function init() {
-			window.shadow = new Merc({
-				health: 95,
-				agility: 96,
-				dexterity: 83,
-				strength: 88,
-				leadership: 35,
-				wisdom: 77,
-				level: 5,
-				marksmanship: 92,
-				explosives: 22,
-				mecanical: 35,
-				medical: 30
-			}, 'Kyle Simmons', 'Shadow');
+			window.shadow = new Shadow();
 
 			var helmet 	= new SteelHelmet();
 			var west 	= new KevlarWest();
