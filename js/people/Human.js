@@ -15,10 +15,7 @@ function Human(stats, name, nickname) {
 			md: [],
 			lg: []
 		};
-		this._hands = {
-			left: new Item(),
-			right: new Item()
-		};
+		this._hands = [];
 
 		for(var stat in stats) {
 			if(stats.hasOwnProperty(stat)) {
@@ -55,10 +52,7 @@ Human.prototype = {
 		legs: new Wear()
 	},
 
-	_hands: {
-		left: new Item(),
-		right: new Item()
-	},
+	_hands: [],
 
 	_inventory: {
 		sm: [],
@@ -101,7 +95,7 @@ Human.prototype.takeOff = function(wear) {
  */
 Human.prototype.give = function(item) {
 	if(!(item instanceof Item)) {
-		console.warn(item, "must be an instance of Wear().");
+		console.warn(item, "must be an instance of Item().");
 		return;
 	}
 
@@ -113,11 +107,16 @@ Human.prototype.give = function(item) {
 /**
  *
  * @param {Item} item
- * @param {String} hand {left|right}
  */
-Human.prototype.equip = function(item, hand) {
-	if(hand == 'left' || hand == 'right')
-		this._hands[hand] = item;
+Human.prototype.equip = function(item) {
+	if(this._hands.length == 2) return;
+	for(var i=0; i < this._hands.length; i++) {
+		/** @type {Item} handItem */
+		var handItem = this._hands[i];
+		if(handItem.hands == 2) return;
+	}
+
+	this._hands.push(item);
 
 	return this;
 };

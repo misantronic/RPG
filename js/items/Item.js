@@ -6,6 +6,7 @@ Item.prototype._name = '';
 Item.prototype._weight = 0;
 Item.prototype._size = '';
 Item.prototype._type = '';
+Item.prototype._hands = 0;
 
 Item.SMALL 	= 'sm';
 Item.MEDIUM = 'md';
@@ -51,5 +52,16 @@ Object.defineProperty(Item.prototype, "type", {
 
 	set: function(val) {
 		this._type = val;
+	}
+});
+
+Object.defineProperty(Item.prototype, "hands", {
+	/** @return {number} */
+	get: function () {
+		return this._hands;
+	},
+
+	set: function(val) {
+		this._hands = val;
 	}
 });

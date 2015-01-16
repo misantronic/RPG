@@ -7,7 +7,8 @@ function Beretta_92F() {
 		range: 12,
 		ap: [ 6 ],
 		weight: 1.1,
-		size: Item.SMALL
+		size: Item.SMALL,
+		hands: 1
 	});
 }
 

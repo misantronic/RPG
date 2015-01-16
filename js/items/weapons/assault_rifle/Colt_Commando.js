@@ -7,7 +7,8 @@ function Colt_Commando() {
 		range: 20,
 		ap: [ 6, 10 ],
 		weight: 2.6,
-		size: Item.LARGE
+		size: Item.LARGE,
+		hands: 2
 	});
 }
 
