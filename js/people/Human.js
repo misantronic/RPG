@@ -57,6 +57,8 @@ Human.prototype = {
 	_thumb: Image,
 
 	_ap: 0,
+	_hp: 0,
+	_energy: 0,
 	_moral: 0
 };
 
@@ -318,6 +320,26 @@ Object.defineProperty(Human.prototype, "moral", {
 
 	set: function(val) {
 		this._moral = val;
+	}
+});
+
+Object.defineProperty(Human.prototype, "hp", {
+	get: function () {
+		return this._hp;
+	},
+
+	set: function(val) {
+		this._hp = val;
+	}
+});
+
+Object.defineProperty(Human.prototype, "energy", {
+	get: function () {
+		return this._energy;
+	},
+
+	set: function(val) {
+		this._energy = val;
 	}
 });
 

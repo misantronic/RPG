@@ -13,7 +13,10 @@ function Shadow(equip) {
 		marksmanship: 92,
 		explosives: 22,
 		mecanical: 35,
-		medical: 30
+		medical: 30,
+		moral: 100,
+		energy: 100,
+		hp: 95
 	});
 
 	if(equip) {
