@@ -2,6 +2,7 @@ function Ivan(equip) {
 	Merc.call(this, {
 		name: 'Ivan Dolvich',
 		nickname: 'Ivan',
+		thumb: './img/people/mercs/ivan.jpg',
 		health: 94,
 		agility: 90,
 		dexterity: 95,

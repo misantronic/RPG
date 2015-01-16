@@ -2,6 +2,7 @@ function Shadow(equip) {
 	Merc.call(this, {
 		name: 'Kyle Simmons',
 		nickname: 'Shadow',
+		thumb: './img/people/mercs/shadow.jpg',
 		health: 95,
 		agility: 96,
 		dexterity: 83,
