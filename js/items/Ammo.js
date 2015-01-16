@@ -30,3 +30,4 @@ Ammo.prototype._stats = {
 
 Ammo.$9MM = '9mm';
 Ammo.$5_56MM = '5.56mm';
+Ammo.$5_45MM = '5.45mm';

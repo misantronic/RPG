@@ -18,6 +18,7 @@
                 'js/people/Human.js',
                 'js/people/Merc.js',
                 'js/people/mercs/Shadow.js',
+                'js/people/mercs/Ivan.js',
 
 				// Wear
 				'js/items/wear/head/SteelHelmet.js',
@@ -27,17 +28,21 @@
 				// Ammo
 				'js/items/ammo/9mm.js',
 				'js/items/ammo/5.56mm.js',
+				'js/items/ammo/5.45mm.js',
 
 				// Weapons
 				'js/items/weapons/pistol/Beretta_92F.js',
-				'js/items/weapons/assault_rifle/Colt_Commando.js'
+				'js/items/weapons/assault_rifle/Colt_Commando.js',
+				'js/items/weapons/assault_rifle/AK-74.js'
 			 ]
 		).done(init);
 
 		function init() {
 			window.shadow = new Shadow(true);
+			window.ivan = new Ivan(true);
 
 			console.log(shadow);
+			console.log(ivan);
 		}
 	</script>
 </body>
