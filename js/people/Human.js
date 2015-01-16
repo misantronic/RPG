@@ -48,6 +48,8 @@ Human.prototype = {
 
 	_hands: [],
 
+	_stance: Human.STAND,
+
 	_inventory: {
 		sm: [],
 		md: [],
@@ -61,6 +63,10 @@ Human.prototype = {
 	_energy: 0,
 	_moral: 0
 };
+
+Human.STAND = 'stand';
+Human.CROUCH = 'crouch';
+Human.PRONE = 'prone';
 
 /**
  *
@@ -362,6 +368,12 @@ Object.defineProperty(Human.prototype, "energy", {
 Object.defineProperty(Human.prototype, "wear", {
 	get: function () {
 		return this._wear;
+	}
+});
+
+Object.defineProperty(Human.prototype, "stance", {
+	get: function () {
+		return this._stance;
 	}
 });
 
