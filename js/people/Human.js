@@ -128,7 +128,16 @@ Human.prototype.grab = function(item) {
 
 Object.defineProperty(Human.prototype, "weightInKG", {
 	get: function () {
-		return this._wear.head.weight + this._wear.body.weight + this._wear.legs.weight;
+		/** @type {Item} item **/
+		var weight = 0, item;
+		[ Item.SMALL, Item.MEDIUM, Item.LARGE].forEach(function(type) {
+			for(var i=0; i < this._inventory[type].length; i++) {
+				item = this._inventory[type][i];
+				weight += item.weight;
+			}
+		}.bind(this));
+
+		return weight;
 	}
 });
 
