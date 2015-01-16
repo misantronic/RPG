@@ -22,9 +22,15 @@ function Human(stats) {
 	}
 }
 
+Human.STAND = 'stand';
+Human.CROUCH = 'crouch';
+Human.PRONE = 'prone';
+
 Human.prototype = {
 	_name: '',
 	_nickname: '',
+	/** @type {Point} */
+	_coord: new Point(),
 
 	_stats: {
 		hea: 0,
@@ -63,10 +69,6 @@ Human.prototype = {
 	_energy: 0,
 	_moral: 0
 };
-
-Human.STAND = 'stand';
-Human.CROUCH = 'crouch';
-Human.PRONE = 'prone';
 
 /**
  *
@@ -157,6 +159,48 @@ Human.prototype.endTurn = function() {
 
 
 	return this;
+};
+
+/**
+ * @param {Point} coord
+ * @return {Number}
+ */
+Human.prototype.calculateWalk = function(coord) {
+	// calculate walking distance
+	var distance = Math.abs(this._coord.x - coord.x) + Math.abs(this._coord.y - coord.y);
+
+	// calculate ap-cost
+	var tileCost = 0;
+	if(this._stance == Human.STAND) 		tileCost = 8;
+	else if(this._stance == Human.CROUCH) 	tileCost = 12;
+	else if(this._stance == Human.PRONE) 	tileCost = 16;
+
+	return tileCost * distance;
+};
+
+/**
+ * @param {Point} coord
+ */
+Human.prototype.walk = function(coord) {
+	var cost = this.calculateWalk(coord);
+
+	console.log("cost", cost);
+
+	if(this._ap - cost < 0) return;
+
+	this._coord = coord;
+
+	this._ap -= cost;
+
+	return this;
+};
+
+/**
+ *
+ * @param {String} stance {Human.STAND|Human.CROUCH|Human.PRONE}
+ */
+Human.prototype.changeStance = function(stance) {
+	this._stance = stance;
 };
 
 Object.defineProperty(Human.prototype, "weightInKG", {
@@ -380,5 +424,17 @@ Object.defineProperty(Human.prototype, "stance", {
 Object.defineProperty(Human.prototype, "inventory", {
 	get: function () {
 		return this._inventory;
+	}
+});
+
+Object.defineProperty(Human.prototype, "coord", {
+	/** @return {Point} */
+	get: function () {
+		return this._coord;
+	},
+
+	/** @param {Point} val */
+	set: function(val) {
+		this._coord = val;
 	}
 });
