@@ -108,6 +108,7 @@ Human.prototype.equip = function(item) {
  * @param {Item} item
  */
 Human.prototype.grab = function(item) {
+	// check if Human can grab item
 	if(this._hands.length == 2) return;
 	for(var i=0; i < this._hands.length; i++) {
 		/** @type {Item} handItem */
@@ -115,7 +116,10 @@ Human.prototype.grab = function(item) {
 		if(handItem.hands == 2) return;
 	}
 
-	this._hands.push(item);
+	// check if item is in inventory
+	this._inventory[item.size].forEach(function(invItem) {
+		if(invItem == item) this._hands.push(item);
+	}.bind(this));
 
 	return this;
 };
