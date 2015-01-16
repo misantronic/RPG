@@ -1,13 +1,12 @@
 /**
  *
- * @param {Object} stats
+ * @param {Object} [stats]
  * @param {String} [name]
  * @param {String} [nickname]
  * @constructor
  */
 function Human(stats, name, nickname) {
 	if(stats) {
-
 		// reset
 		this._stats = {};
 		this._inventory = {
