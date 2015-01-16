@@ -98,6 +98,20 @@ Human.prototype.equip = function(item) {
 	return this;
 };
 
+Human.prototype.unequip = function(item) {
+	// remove from inventory
+	this._inventory[item.size].forEach(function(invItem, i) {
+		if(invItem === item) this._inventory[item.size].splice(i, 1);
+	}.bind(this));
+
+	// check hands
+	this._hands.forEach(function(handItem, i) {
+		if(handItem === item) this._hands.splice(i, 1);
+	}.bind(this));
+
+	return this;
+};
+
 /**
  *
  * @param {Item} item
@@ -113,7 +127,7 @@ Human.prototype.grab = function(item) {
 
 	// check if item is in inventory
 	this._inventory[item.size].forEach(function(invItem) {
-		if(invItem == item) this._hands.push(item);
+		if(invItem === item) this._hands.push(item);
 	}.bind(this));
 
 	return this;
