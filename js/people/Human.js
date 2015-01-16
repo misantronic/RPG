@@ -167,6 +167,7 @@ Human.prototype.endTurn = function() {
  */
 Human.prototype.calculateWalk = function(coord) {
 	// calculate walking distance
+	// TODO: consider world map resp. obsticales
 	var distance = Math.abs(this._coord.x - coord.x) + Math.abs(this._coord.y - coord.y);
 
 	// calculate ap-cost
