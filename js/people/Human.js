@@ -175,7 +175,11 @@ Human.prototype.calculateWalk = function(coord) {
 	else if(this._stance == Human.CROUCH) 	tileCost = 12;
 	else if(this._stance == Human.PRONE) 	tileCost = 16;
 
-	return tileCost * distance;
+	var cost = tileCost * distance;
+
+	// TODO: calculate way
+
+	return cost;
 };
 
 /**
