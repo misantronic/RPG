@@ -137,6 +137,22 @@ Human.prototype.grab = function(item) {
 	return this;
 };
 
+Human.prototype.startTurn = function() {
+	// calculate APs
+	var ap = ((this._stats.agi * 0.9) + (this._stats.dex * 0.6) + (this._energy * 0.6) + this._hp) / 3;
+	ap = Math.round(ap);
+
+	this._ap = ap;
+
+	return this;
+};
+
+Human.prototype.endTurn = function() {
+
+
+	return this;
+};
+
 Object.defineProperty(Human.prototype, "weightInKG", {
 	get: function () {
 		var weight = 0,
