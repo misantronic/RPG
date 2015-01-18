@@ -181,40 +181,37 @@ Human.prototype.calculateDistance = function(coord) {
 	var cost = tileCost * dist;
 
 	// caluclate diagonal walking distance
-	var distanceX = [], distanceY = [];
+	var distX = [], distY = [];
 	for(var x = this._coord.x; this._coord.x < coord.x ? x <= coord.x : x >= coord.x; this._coord.x < coord.x ? x++ : x--) {
-		distanceX.push(x);
+		distX.push(x);
 	}
-	distanceX.type = 'x';
+	distX.type = 'x';
 	for(var y = this._coord.y; this._coord.y < coord.y ? y <= coord.y : y >= coord.y; this._coord.y < coord.y ? y++ : y--) {
-		distanceY.push(y);
+		distY.push(y);
 	}
-	distanceY.type = 'y';
+	distY.type = 'y';
 
 	// find out which is longest and shortest distance
-	var lgDistance = distanceX.length > distanceY.length ? distanceX : distanceY;
-	var shDistance = distanceX.length > distanceY.length ? distanceY : distanceX;
-	var div = Math.ceil(lgDistance.length / shDistance.length);
-	var index = 0;
-	var fullDistance = [];
+	var lgDist = distX.length > distY.length ? distX : distY,
+		shDist = distX.length > distY.length ? distY : distX,
+		div = Math.ceil(lgDist.length / shDist.length),
+		index = 0,
+		fullDist = [];
 
-	lgDistance.forEach(function(p1, i) {
+	lgDist.forEach(function(p1, i) {
 		if(i != 0 && i % div == 0) index++;
 
-		if(lgDistance.type == 'x') {
-			fullDistance.push( new Point(p1, shDistance[index]) );
-		} else if(lgDistance.type == 'y') {
-			fullDistance.push( new Point(shDistance[index], p1) );
-		}
+		if(lgDist.type == 'x') 		fullDist.push( new Point(p1, shDist[index]) );
+		else if(lgDist.type == 'y') fullDist.push( new Point(shDist[index], p1) );
 	});
 
 	// check if last element equals the target coord
-	var lastPoint = fullDistance[fullDistance.length-1];
+	var lastPoint = fullDist[fullDist.length-1];
 	if(lastPoint.x != coord.x || lastPoint.y != coord.y) {
-		fullDistance.push(coord);
+		fullDist.push(coord);
 	}
 
-	output.fullDistance = fullDistance;
+	output.fullDistance = fullDist;
 	output.cost = cost;
 
 	return output;
