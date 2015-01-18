@@ -64,7 +64,7 @@ Human.prototype = {
 
 	_thumb: Image,
 
-	_ap: 0,
+	_ap: Infinity,
 	_hp: 0,
 	_energy: 0,
 	_moral: 0
@@ -162,13 +162,15 @@ Human.prototype.endTurn = function() {
 };
 
 /**
+ *
  * @param {Point} coord
- * @return {Number}
+ * @returns {Object}
  */
-Human.prototype.calculateWalk = function(coord) {
+Human.prototype.calculateDistance = function(coord) {
 	// calculate walking distance
 	// TODO: consider world map resp. obsticales
-	var distance = Math.abs(this._coord.x - coord.x) + Math.abs(this._coord.y - coord.y);
+	var dist = Math.abs(this._coord.x - coord.x) + Math.abs(this._coord.y - coord.y);
+	var output = {};
 
 	// calculate ap-cost
 	var tileCost = 0;
@@ -176,22 +178,60 @@ Human.prototype.calculateWalk = function(coord) {
 	else if(this._stance == Human.CROUCH) 	tileCost = 12;
 	else if(this._stance == Human.PRONE) 	tileCost = 16;
 
-	var cost = tileCost * distance;
+	var cost = tileCost * dist;
 
-	// TODO: calculate way
+	// caluclate diagonal walking distance
+	var distanceX = [], distanceY = [];
+	for(var x = this._coord.x; this._coord.x < coord.x ? x <= coord.x : x >= coord.x; this._coord.x < coord.x ? x++ : x--) {
+		distanceX.push(x);
+	}
+	distanceX.type = 'x';
+	for(var y = this._coord.y; this._coord.y < coord.y ? y <= coord.y : y >= coord.y; this._coord.y < coord.y ? y++ : y--) {
+		distanceY.push(y);
+	}
+	distanceY.type = 'y';
 
-	return cost;
+	// find out which is longest and shortest distance
+	var lgDistance = distanceX.length > distanceY.length ? distanceX : distanceY;
+	var shDistance = distanceX.length > distanceY.length ? distanceY : distanceX;
+	var div = Math.ceil(lgDistance.length / shDistance.length);
+	var index = 0;
+	var fullDistance = [];
+
+	lgDistance.forEach(function(p1, i) {
+		if(i != 0 && i % div == 0) index++;
+
+		if(lgDistance.type == 'x') {
+			fullDistance.push( new Point(p1, shDistance[index]) );
+		} else if(lgDistance.type == 'y') {
+			fullDistance.push( new Point(shDistance[index], p1) );
+		}
+	});
+
+	// check if last element equals the target coord
+	var lastPoint = fullDistance[fullDistance.length-1];
+	if(lastPoint.x != coord.x || lastPoint.y != coord.y) {
+		fullDistance.push(coord);
+	}
+
+	output.fullDistance = fullDistance;
+	output.cost = cost;
+
+	return output;
 };
 
 /**
  * @param {Point} coord
  */
 Human.prototype.walk = function(coord) {
-	var cost = this.calculateWalk(coord);
+	var distance = this.calculateDistance(coord);
+	var cost = distance.cost;
 
-	console.log("cost", cost);
+	console.log("cost", cost, "distance", distance.fullDistance);
 
-	if(this._ap - cost < 0) return;
+	if(this._ap - cost < 0) {
+		return this;
+	}
 
 	this._coord = coord;
 
