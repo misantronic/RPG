@@ -24,9 +24,12 @@ function Weapon(type, stats) {
 Weapon.prototype = new Item();
 Weapon.constructor = Weapon;
 
+Weapon.prototype._caliber = Ammo;
+Weapon.prototype._ammo = Ammo;
+
 Weapon.prototype._stats = {
 	damage: 0,
-	ammo: Ammo,
+	caliber: Ammo,
 	magazine: 0,
 	range: 0,
 	ap: [ 0 ]
@@ -36,6 +39,16 @@ Weapon.PISTOL 			= 'pistol';
 Weapon.SMG 				= 'smg';
 Weapon.RIFLE 			= 'rifle';
 Weapon.ASSAULT_RIFLE 	= 'assault_rifle';
+
+/**
+ *
+ * @param {Ammo} ammo
+ */
+Weapon.prototype.reload = function(ammo) {
+	if(ammo instanceof this.caliber) {
+		this.ammo = ammo;
+	}
+};
 
 // GETTER / SETTER
 
@@ -50,12 +63,24 @@ Object.defineProperty(Weapon.prototype, "damage", {
 });
 
 Object.defineProperty(Weapon.prototype, "ammo", {
+	/** @returns {Ammo} */
 	get: function () {
-		return this._stats.ammo;
+			return this._ammo;
+	},
+
+	/** @param {Ammo} val */
+	set: function(val) {
+		this._ammo = val;
+	}
+});
+
+Object.defineProperty(Weapon.prototype, "caliber", {
+	get: function () {
+		return this._stats.caliber;
 	},
 
 	set: function(val) {
-		this._stats.ammo = val;
+		this._stats.caliber = val;
 	}
 });
 
