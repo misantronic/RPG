@@ -2,6 +2,13 @@ function Abstract() {
 
 }
 
+/**
+ *
+ * @type {Image}
+ * @private
+ */
+Abstract.prototype._thumb = Image;
+
 Abstract.prototype._log_output = "";
 
 Abstract.prototype.log = function() {
@@ -14,3 +21,17 @@ Abstract.prototype.log = function() {
 
 	console.log(msg);
 };
+
+// GETTER / SETTER
+
+Object.defineProperty(Abstract.prototype, "thumb", {
+	get: function () {
+		return this._thumb;
+	},
+
+	set: function(val) {
+		var img = new Image();
+		img.src = val;
+		this._thumb = img;
+	}
+});
