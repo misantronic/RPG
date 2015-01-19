@@ -1,6 +1,6 @@
 /**
  *
- * @param {String} [type] {Wear.HEAD|Wear.BODY|Wear.LEGS}
+ * @param {Human.HEAD|Human.BODY|Human.LEGS} [type]
  * @param {Object} [stats]
  * @constructor
  */
@@ -27,10 +27,6 @@ Wear.constructor = Wear;
 Wear.prototype._stats = {
 	armor: 0
 };
-
-Wear.HEAD = 'head';
-Wear.BODY = 'body';
-Wear.LEGS = 'legs';
 
 // GETTER / SETTER
 
