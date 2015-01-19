@@ -318,7 +318,8 @@ Person.prototype.walk = function(coord) {
  */
 Person.prototype.shoot = function(coord, bodypart, accuracy) {
 	var distance = this._calculateDistance(coord),
-		target = "("+coord.x+"/"+coord.y+")";
+		target = "("+coord.x+"/"+coord.y+")",
+		me = "<a href=\"#/person/"+ this._nickname +"\">"+ this._nickname +"</a>";
 
 	// calculate accuracy
 	accuracy = 0.5 + (0.5 * accuracy);
@@ -337,6 +338,15 @@ Person.prototype.shoot = function(coord, bodypart, accuracy) {
 	this._hands.forEach(
 		/** @param {Weapon} weapon */
 		function(weapon) {
+			if(!(weapon instanceof Weapon)) return;
+			if(weapon.ammo.rounds == 0) {
+				this.log(me +"'s "+ weapon.name + "is out of ammo.");
+				return;
+			}
+			// reduce ammo
+			// todo: consider burst mode/auto
+			weapon.ammo.rounds -= 1;
+
 			// calculate range factor
 			var chance_range = weapon.range / distance.sightDistance;
 
@@ -356,6 +366,7 @@ Person.prototype.shoot = function(coord, bodypart, accuracy) {
 							if(person.stance == Person.STAND) accuracy *= 1.2;	// improve by 20%
 							if(person.stance == Person.CROUCH) accuracy *= 1.1;	// improve by 20%
 							break;
+						default:
 					}
 				}
 
@@ -363,39 +374,37 @@ Person.prototype.shoot = function(coord, bodypart, accuracy) {
 			}
 
 			var chance_of_hit = Math.round(chance_range * accuracy * 100) / 100;
+			var random = this.MT.random();
 
 			// consider marksmanship
 			chance_of_hit *= (this._stats.mrk / 100);
 
-			// max 95%
+			// max 95% change of hit
 			if(chance_of_hit > 0.95) chance_of_hit = 0.95;
 
-			this.log("<a href=\"#/person/"+ this._nickname +"\">"+ this._nickname +"</a> tries to shoot at ", target, "with", chance_of_hit, "chance of hitting.");
-
-			console.log("accuracy", accuracy);
-			console.log("chance_range", chance_range);
-			console.log("chance_of_hit", chance_of_hit);
-
-			//var success = 0;
-			//for(var i=0; i < 10; i++) {
-			//	if(chance_of_hit >= this.MT.random()) {
-			//		success++;
-			//	}
-			//}
-			//console.log("success", success);
-
-			var random = this.MT.random();
-			console.log("random", random);
+			this.log(me, "tries to shoot at ", target, "with", chance_of_hit, "chance of hitting.");
 
 			if(random <= chance_of_hit) {
-				console.log("HIT!")
+				var dmg = person.dealDamage(weapon, bodypart);
+				this.log(me, "deals "+ dmg +" damage on", target);
 			} else {
-				console.log("Miss!")
+				this.log(me, "misses.");
 			}
 		}.bind(this)
 	);
 
 	return this;
+};
+
+/**
+ *
+ * @param {Weapon} weapon
+ * @param {Person.HEAD|Person.BODY|Person.LEGS} bodypart
+ */
+Person.prototype.dealDamage = function(weapon, bodypart) {
+	/** @type {Wear} wear */
+	var wear = this._wear[bodypart];
+	console.log(weapon.damage, weapon.ammo.type, wear.armor);
 };
 
 /**
