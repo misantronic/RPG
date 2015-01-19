@@ -13,6 +13,11 @@ function Person(stats) {
 			lg: []
 		};
 		this._hands = [];
+		this._wear = {
+			head: new Wear(),
+			body: new Wear(),
+			legs: new Wear()
+		};
 
 		for(var stat in stats) {
 			if(stats.hasOwnProperty(stat)) {
@@ -129,6 +134,13 @@ Person.prototype._hp = 0;
  * @private
  */
 Person.prototype._energy = 0;
+
+/**
+ *
+ * @type {boolean}
+ * @private
+ */
+Person.prototype._bleeding = false;
 
 /**
  * @param {...Array} arguments items
@@ -328,18 +340,18 @@ Person.prototype.walk = function(coord) {
 Person.prototype.shoot = function(coord, bodypart, accuracy) {
 	var distance = this._calculateDistance(coord),
 		target = "("+coord.x+"/"+coord.y+")",
-		me = "<a href=\"#/person/"+ this._nickname +"\">"+ this._nickname +"</a>";
+		me = "<a href=\"#/enemy/"+ this._nickname +"\">"+ this._nickname +"</a>";
 
 	// calculate accuracy
 	accuracy = 0.5 + (0.5 * accuracy);
 
-	// get person to shoot at
-	/** @type {Person} person */
-	var person;
+	// get enemy to shoot at
+	/** @type {Person} enemy */
+	var enemy;
 	World.PEOPLE.forEach(
 		/** @param {Person} somePerson */
 		function(somePerson) {
-			if(somePerson.coord.x == coord.x && somePerson.coord.y == coord.y) person = somePerson;
+			if(somePerson.coord.x == coord.x && somePerson.coord.y == coord.y) enemy = somePerson;
 		}
 	);
 
@@ -359,27 +371,27 @@ Person.prototype.shoot = function(coord, bodypart, accuracy) {
 			// calculate range factor
 			var chance_range = weapon.range / distance.sightDistance;
 
-			if(person) {
+			if(enemy) {
 				// calculate stance factor
-				if(person.stance != this._stance) {
+				if(enemy.stance != this._stance) {
 					switch(this._stance) {
 						case Person.STAND:
-							if(person.stance == Person.CROUCH) accuracy /= 1.1;	// reduce by 10%
-							if(person.stance == Person.PRONE) accuracy /= 1.2;	// reduce by 20%
+							if(enemy.stance == Person.CROUCH) accuracy /= 1.1;	// reduce by 10%
+							if(enemy.stance == Person.PRONE) accuracy /= 1.2;	// reduce by 20%
 							break;
 						case Person.CROUCH:
-							if(person.stance == Person.STAND) accuracy *= 1.1;	// improve by 10%
-							if(person.stance == Person.PRONE) accuracy /= 1.1;	// reduce by 10%
+							if(enemy.stance == Person.STAND) accuracy *= 1.1;	// improve by 10%
+							if(enemy.stance == Person.PRONE) accuracy /= 1.1;	// reduce by 10%
 							break;
 						case Person.PRONE:
-							if(person.stance == Person.STAND) accuracy *= 1.2;	// improve by 20%
-							if(person.stance == Person.CROUCH) accuracy *= 1.1;	// improve by 20%
+							if(enemy.stance == Person.STAND) accuracy *= 1.2;	// improve by 20%
+							if(enemy.stance == Person.CROUCH) accuracy *= 1.1;	// improve by 20%
 							break;
 						default:
 					}
 				}
 
-				target = "<a href=\"#/person/"+ person.nickname +"\">"+ person.nickname +"</a>";
+				target = "<a href=\"#/enemy/"+ enemy.nickname +"\">"+ enemy.nickname +"</a>";
 			}
 
 			var chance_of_hit = Math.round(chance_range * accuracy * 100) / 100;
@@ -394,8 +406,12 @@ Person.prototype.shoot = function(coord, bodypart, accuracy) {
 			this.log(me, "tries to shoot at ", target, "with", chance_of_hit, "chance of hitting.");
 
 			if(random <= chance_of_hit) {
-				var dmg = person.dealDamage(weapon, bodypart);
-				this.log(me, "deals "+ dmg +" damage on", target);
+				var dmg = enemy.dealDamage(weapon, bodypart);
+
+				var msg = me + " deals "+ dmg +" damage on "+ target +".";
+				if(enemy.bleeding) msg += " "+ target + " is bleeding.";
+
+				this.log(msg);
 			} else {
 				this.log(me, "misses.");
 			}
@@ -409,11 +425,21 @@ Person.prototype.shoot = function(coord, bodypart, accuracy) {
  *
  * @param {Weapon} weapon
  * @param {Person.HEAD|Person.BODY|Person.LEGS} bodypart
+ * @returns {number} damage
  */
 Person.prototype.dealDamage = function(weapon, bodypart) {
 	/** @type {Wear} wear */
 	var wear = this._wear[bodypart];
+	var damage = weapon.damage - weapon.damage * wear.armor;
 	console.log(weapon.damage, weapon.ammo.type, wear.armor);
+	console.log("damage:", damage);
+
+	this._hp -= damage;
+
+	// calculate bleeding (40% chance)
+	if(!this._bleeding) this._bleeding = damage > 15 && this.MT.random() <= 0.4;
+
+	return damage;
 };
 
 /**
@@ -635,5 +661,16 @@ Object.defineProperty(Person.prototype, "coord", {
 	/** @param {Point} val */
 	set: function(val) {
 		this._coord = val;
+	}
+});
+
+Object.defineProperty(Person.prototype, "bleeding", {
+	get: function () {
+		return this._bleeding;
+	},
+
+	/** @param {Boolean} val */
+	set: function(val) {
+		this._bleeding = val;
 	}
 });
