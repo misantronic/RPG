@@ -29,9 +29,36 @@ Human.STAND = 'stand';
 Human.CROUCH = 'crouch';
 Human.PRONE = 'prone';
 
+Human.HEAD = 'head';
+Human.BODY = 'body';
+Human.LEGS = 'legs';
+
+/**
+ *
+ * @type {string}
+ * @private
+ */
 Human.prototype._name = '';
+
+/**
+ *
+ * @type {string}
+ * @private
+ */
 Human.prototype._nickname = '';
+
+/**
+ *
+ * @type {Point}
+ * @private
+ */
 Human.prototype._coord = new Point();
+
+/**
+ *
+ * @type {{hea: number, agi: number, dex: number, str: number, ldr: number, wis: number, lvl: number, mec: number, exp: number, med: number, mrk: number}}
+ * @private
+ */
 Human.prototype._stats = {
 	hea: 0,
 	agi: 0,
@@ -45,21 +72,62 @@ Human.prototype._stats = {
 	med: 0,
 	mrk: 0
 };
+
+/**
+ *
+ * @type {{head: Wear, body: Wear, legs: Wear}}
+ * @private
+ */
 Human.prototype._wear = {
 	head: new Wear(),
 	body: new Wear(),
 	legs: new Wear()
 };
+
+/**
+ *
+ * @type {Array}
+ * @private
+ */
 Human.prototype._hands = [];
+
+/**
+ *
+ * @type {string}
+ * @private
+ */
 Human.prototype._stance = Human.STAND;
+
+/**
+ *
+ * @type {{sm: Array, md: Array, lg: Array}}
+ * @private
+ */
 Human.prototype._inventory = {
 	sm: [],
 	md: [],
 	lg: []
 };
-Human.prototype._thumb = Image;
+
+/**
+ *
+ * @type {Number}
+ * @private
+ */
 Human.prototype._ap = Infinity;
+
+/**
+ *
+ * @type {number}
+ * @private
+ */
 Human.prototype._hp = 0;
+
+/**
+ *
+ * @type {number}
+ * @private
+ */
 Human.prototype._energy = 0;
 
 /**
@@ -235,6 +303,60 @@ Human.prototype.walk = function(coord) {
 
 /**
  *
+ * @param {Point} coord
+ * @param {Human.HEAD|Human.BODY|Human.LEGS} bodypart
+ * @param {Number} accuracy 0.0 - 1.0
+ */
+Human.prototype.shoot = function(coord, bodypart, accuracy) {
+	var distance = this._calculateDistance(coord);
+
+	// calculate accuracy
+	accuracy = 0.5 + (0.5 * accuracy);
+
+	// get person to shoot at
+	/** @type {Human} person */
+	var person;
+	World.PEOPLE.forEach(
+		/** @param {Human} somePerson */
+		function(somePerson) {
+			if(somePerson.coord.x == coord.x && somePerson.coord.y == coord.y) person = somePerson;
+		}
+	);
+
+	// calculate if bullet hits, for every weapon in hand
+	this._hands.forEach(
+		/** @param {Weapon} weapon */
+		function(weapon) {
+			// calculate range factor
+			var chance_range = weapon.range / distance.sightDistance;
+
+			if(person) {
+				// calculate stance factor
+				if(person.stance != this._stance) {
+					switch(this._stance) {
+						case Human.STAND:
+							if(person.stance == Human.CROUCH) accuracy /= 1.1;	// reduce by 10%
+							if(person.stance == Human.PRONE) accuracy /= 1.2;	// reduce by 20%
+							break;
+						case Human.CROUCH:
+							if(person.stance == Human.STAND) accuracy /= 1.1;	// reduce by 10%
+							if(person.stance == Human.PRONE) accuracy /= 1.2;	// reduce by 20%
+							break;
+						case Human.PRONE:
+							if(person.stance == Human.STAND) accuracy /= 1.1;	// reduce by 10%
+							if(person.stance == Human.CROUCH) accuracy /= 1.2;	// reduce by 20%
+							break;
+					}
+				}
+			}
+
+			console.log("chance_range", chance_range, "accuracy", accuracy, "chance of hit:", chance_range * accuracy);
+		}.bind(this)
+	);
+};
+
+/**
+ *
  * @param {String} stance {Human.STAND|Human.CROUCH|Human.PRONE}
  */
 Human.prototype.changeStance = function(stance) {
@@ -264,18 +386,6 @@ Object.defineProperty(Human.prototype, "weightInPerc", {
 });
 
 // GETTER / SETTER
-
-Object.defineProperty(Human.prototype, "thumb", {
-	get: function () {
-		return this._thumb;
-	},
-
-	set: function(val) {
-		var img = new Image();
-		img.src = val;
-		this._thumb = img;
-	}
-});
 
 Object.defineProperty(Human.prototype, "name", {
 	get: function () {
