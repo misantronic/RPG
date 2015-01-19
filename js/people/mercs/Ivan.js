@@ -24,6 +24,8 @@ function Ivan(equip) {
 		var shorts 	= new KevlarShorts();
 		var ak74 	= new AK_74();
 
+		ak74.reload(new $5_45MM(Ammo.TYPE_AP));
+
 		this
 			.equip(helmet)
 			.equip(west)
@@ -31,6 +33,9 @@ function Ivan(equip) {
 			.equip(ak74)
 			.equip(new $5_45MM(Ammo.TYPE_AP))
 			.equip(new $5_45MM(Ammo.TYPE_HP))
+			.putOn(helmet)
+			.putOn(west)
+			.putOn(shorts)
 			.grab(ak74);
 	}
 }

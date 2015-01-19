@@ -24,6 +24,8 @@ function Shadow(equip) {
 		var shorts 	= new KevlarShorts();
 		var colt 	= new Colt_Commando();
 
+		colt.reload(new $5_56MM(Ammo.TYPE_BALL));
+
 		this
 			.equip(helmet)
 			.equip(west)
@@ -31,6 +33,9 @@ function Shadow(equip) {
 			.equip(colt)
 			.equip(new $5_56MM(Ammo.TYPE_BALL))
 			.equip(new $5_56MM(Ammo.TYPE_GLASER))
+			.putOn(helmet)
+			.putOn(west)
+			.putOn(shorts)
 			.grab(colt);
 	}
 }
