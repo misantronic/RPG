@@ -51,9 +51,9 @@
 			console.log(shadow);
 			console.log(ivan);
 
-			ivan.walk(new Point(20, 20));
+			World.addPeople(shadow, ivan);
 
-			World.PEOPLE.push(shadow, ivan);
+			ivan.walk(new Point(20, 20));
 
 			//document.body.appendChild(shadow.thumb);
 			//document.body.appendChild(ivan.thumb);
