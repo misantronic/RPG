@@ -19,6 +19,7 @@
     "tests"
   ],
   "dependencies": {
+    "300494": "https://gist.github.com/300494.git",
     "minc": "~0.6.3"
   }
 }
