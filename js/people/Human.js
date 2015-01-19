@@ -273,6 +273,7 @@ Human.prototype._calculateDistance = function(coord) {
 
 	// calculate sight distance (c² = a² + b²)
 	var sightDist = Math.sqrt(Math.pow(coord.x - this._coord.x, 2) + Math.pow(coord.y - this._coord.y, 2));
+	sightDist = Math.round(sightDist * 100) / 100;
 
 	return {
 		walkingDistance: walkingDist,
@@ -288,7 +289,11 @@ Human.prototype.walk = function(coord) {
 	var distance = this._calculateDistance(coord);
 	var cost = distance.cost;
 
-	this.log("cost", cost, "walking distance", distance.walkingDistance, "sight distance", distance.sightDistance);
+	this.log(this._nickname, "walks from ("+ this._coord.x +"/"+ this._coord.y +") to ("+ coord.x +"/"+ coord.y +")");
+
+	console.log("- cost", cost);
+	console.log("- walking distance", distance.walkingDistance);
+	console.log("- sight distance", distance.sightDistance);
 
 	if(this._ap - cost < 0) {
 		return this;
@@ -350,9 +355,13 @@ Human.prototype.shoot = function(coord, bodypart, accuracy) {
 				}
 			}
 
-			console.log("chance_range", chance_range, "accuracy", accuracy, "chance of hit:", chance_range * accuracy);
+			var chance_of_hit = Math.round(chance_range * accuracy * 100) / 100;
+
+			this.log(this._nickname, "shoots at ", person ? person.nickname : coord, "with", chance_of_hit, "chance of hitting.");
 		}.bind(this)
 	);
+
+	return this;
 };
 
 /**
