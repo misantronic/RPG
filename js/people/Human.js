@@ -289,7 +289,7 @@ Human.prototype.walk = function(coord) {
 	var distance = this._calculateDistance(coord);
 	var cost = distance.cost;
 
-	this.log(this._nickname, "walks from ("+ this._coord.x +"/"+ this._coord.y +") to ("+ coord.x +"/"+ coord.y +")");
+	this.log("<a href=\"#/person/"+ this._nickname +"\">"+ this._nickname +"</a> walks from ("+ this._coord.x +"/"+ this._coord.y +") to ("+ coord.x +"/"+ coord.y +")");
 
 	console.log("- cost", cost);
 	console.log("- walking distance", distance.walkingDistance);
@@ -313,7 +313,8 @@ Human.prototype.walk = function(coord) {
  * @param {Number} accuracy 0.0 - 1.0
  */
 Human.prototype.shoot = function(coord, bodypart, accuracy) {
-	var distance = this._calculateDistance(coord);
+	var distance = this._calculateDistance(coord),
+		target = "("+coord.x+"/"+coord.y+")";
 
 	// calculate accuracy
 	accuracy = 0.5 + (0.5 * accuracy);
@@ -353,11 +354,13 @@ Human.prototype.shoot = function(coord, bodypart, accuracy) {
 							break;
 					}
 				}
+
+				target = "<a href=\"#/person/"+ person.nickname +"\">"+ person.nickname +"</a>";
 			}
 
 			var chance_of_hit = Math.round(chance_range * accuracy * 100) / 100;
 
-			this.log(this._nickname, "shoots at ", person ? person.nickname : coord, "with", chance_of_hit, "chance of hitting.");
+			this.log("<a href=\"#/person/"+ this._nickname +"\">"+ this._nickname +"</a> shoots at ", target, "with", chance_of_hit, "chance of hitting.");
 		}.bind(this)
 	);
 
