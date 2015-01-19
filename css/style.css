@@ -1,4 +1,11 @@
 #log {
-    width: 400px;
-    height: 500px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 12px;
+    display: block;
+    width: 650px;
+    height: 300px;
+    padding: 5px;
+    border: 3px outset #333;
+    overflow: auto;
+    line-height: 140%;
 }
