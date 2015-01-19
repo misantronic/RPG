@@ -131,16 +131,20 @@ Person.prototype._hp = 0;
 Person.prototype._energy = 0;
 
 /**
- *
- * @param {Wear} wear
+ * @param {...Array} arguments items
+ * @returns {Person}
  */
-Person.prototype.putOn = function(wear) {
-	if(!(wear instanceof Wear)) {
-		console.warn(wear, "must be an instance of Wear().");
-		return this;
-	}
+Person.prototype.putOn = function() {
+	var items = Array.prototype.slice.call(arguments);
 
-	this._wear[wear.type] = wear;
+	items.forEach(
+		/**
+		 * @param {Wear} item
+		 */
+		function(wear) {
+			this._wear[wear.type] = wear;
+		}.bind(this)
+	);
 
 	return this;
 };
@@ -155,17 +159,22 @@ Person.prototype.takeOff = function(wear) {
 	return this;
 };
 
-/**
- *
- * @param {Item} item
- */
-Person.prototype.equip = function(item) {
-	if(!(item instanceof Item)) {
-		console.warn(item, "must be an instance of Item().");
-		return;
-	}
 
-	this._inventory[item.size].push(item);
+/**
+ * @param {...Array} arguments items
+ * @returns {Person}
+ */
+Person.prototype.equip = function() {
+	var items = Array.prototype.slice.call(arguments);
+
+	items.forEach(
+		/**
+		 * @param {Item} item
+		 */
+		function(item) {
+			this._inventory[item.size].push(item);
+		}.bind(this)
+	);
 
 	return this;
 };
@@ -211,7 +220,7 @@ Person.prototype.grab = function(item) {
 
 Person.prototype.startTurn = function() {
 	// calculate APs
-	var ap = ((this._stats.agi * 1) + (this._stats.dex * 0.5) + (this._energy * 0.5) + ((this._hp / this._stats.hea) * 100)) / 3;
+	var ap = (this._stats.agi + (this._stats.dex * 0.5) + (this._energy * 0.5) + ((this._hp / this._stats.hea) * 100)) / 3;
 	ap = Math.round(ap);
 
 	this._ap = ap;

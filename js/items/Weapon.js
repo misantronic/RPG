@@ -48,6 +48,8 @@ Weapon.prototype.reload = function(ammo) {
 	if(ammo instanceof this.caliber) {
 		this.ammo = ammo;
 	}
+
+	return this;
 };
 
 // GETTER / SETTER

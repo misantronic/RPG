@@ -27,15 +27,8 @@ function Shadow(equip) {
 		colt.reload(new $5_56MM(Ammo.TYPE_BALL));
 
 		this
-			.equip(helmet)
-			.equip(west)
-			.equip(shorts)
-			.equip(colt)
-			.equip(new $5_56MM(Ammo.TYPE_BALL))
-			.equip(new $5_56MM(Ammo.TYPE_GLASER))
-			.putOn(helmet)
-			.putOn(west)
-			.putOn(shorts)
+			.equip(helmet, west, shorts, colt, new $5_56MM(Ammo.TYPE_BALL), new $5_56MM(Ammo.TYPE_GLASER))
+			.putOn(helmet, west, shorts)
 			.grab(colt);
 	}
 }

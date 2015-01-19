@@ -27,15 +27,8 @@ function Ivan(equip) {
 		ak74.reload(new $5_45MM(Ammo.TYPE_AP));
 
 		this
-			.equip(helmet)
-			.equip(west)
-			.equip(shorts)
-			.equip(ak74)
-			.equip(new $5_45MM(Ammo.TYPE_AP))
-			.equip(new $5_45MM(Ammo.TYPE_HP))
-			.putOn(helmet)
-			.putOn(west)
-			.putOn(shorts)
+			.equip(helmet, west, shorts, ak74, new $5_45MM(Ammo.TYPE_AP), new $5_45MM(Ammo.TYPE_HP))
+			.putOn(helmet, west, shorts)
 			.grab(ak74);
 	}
 }
