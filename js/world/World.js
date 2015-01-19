@@ -1,0 +1,5 @@
+function World() {
+
+}
+
+World.PEOPLE = [];
