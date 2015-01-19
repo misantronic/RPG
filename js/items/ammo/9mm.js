@@ -1,4 +1,4 @@
-function $9MM(type) {
+function $9x19MM(type) {
 	if(!type) type = Ammo.TYPE_BALL;
 
 	Ammo.call(this, Ammo.$9x19MM, {
@@ -9,5 +9,5 @@ function $9MM(type) {
 	});
 }
 
-$9MM.prototype = new Ammo();
-$9MM.constructor = $9MM;
+$9x19MM.prototype = new Ammo();
+$9x19MM.constructor = $9x19MM;
