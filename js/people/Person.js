@@ -137,7 +137,7 @@ Person.prototype._energy = 0;
 Person.prototype.putOn = function(wear) {
 	if(!(wear instanceof Wear)) {
 		console.warn(wear, "must be an instance of Wear().");
-		return;
+		return this;
 	}
 
 	this._wear[wear.type] = wear;
@@ -181,6 +181,10 @@ Person.prototype.unequip = function(item) {
 		if(handItem === item) this._hands.splice(i, 1);
 	}.bind(this));
 
+	//[Person.HEAD, Person.BODY, Person.LEGS].forEach(function(bodypart) {
+	//	if(this._wear[bodypart] === item)
+	//})
+
 	return this;
 };
 
@@ -190,11 +194,11 @@ Person.prototype.unequip = function(item) {
  */
 Person.prototype.grab = function(item) {
 	// check if Person can grab item
-	if(this._hands.length == 2) return;
+	if(this._hands.length == 2) return this;
 	for(var i=0; i < this._hands.length; i++) {
 		/** @type {Item} handItem */
 		var handItem = this._hands[i];
-		if(handItem.hands == 2) return;
+		if(handItem.hands == 2) return this;
 	}
 
 	// check if item is in inventory
@@ -207,7 +211,7 @@ Person.prototype.grab = function(item) {
 
 Person.prototype.startTurn = function() {
 	// calculate APs
-	var ap = ((this._stats.agi * 0.9) + (this._stats.dex * 0.6) + (this._energy * 0.6) + this._hp) / 3;
+	var ap = ((this._stats.agi * 1) + (this._stats.dex * 0.5) + (this._energy * 0.5) + ((this._hp / this._stats.hea) * 100)) / 3;
 	ap = Math.round(ap);
 
 	this._ap = ap;
@@ -345,12 +349,12 @@ Person.prototype.shoot = function(coord, bodypart, accuracy) {
 							if(person.stance == Person.PRONE) accuracy /= 1.2;	// reduce by 20%
 							break;
 						case Person.CROUCH:
-							if(person.stance == Person.STAND) accuracy /= 1.1;	// reduce by 10%
-							if(person.stance == Person.PRONE) accuracy /= 1.2;	// reduce by 20%
+							if(person.stance == Person.STAND) accuracy *= 1.1;	// improve by 10%
+							if(person.stance == Person.PRONE) accuracy /= 1.1;	// reduce by 10%
 							break;
 						case Person.PRONE:
-							if(person.stance == Person.STAND) accuracy /= 1.1;	// reduce by 10%
-							if(person.stance == Person.CROUCH) accuracy /= 1.2;	// reduce by 20%
+							if(person.stance == Person.STAND) accuracy *= 1.2;	// improve by 20%
+							if(person.stance == Person.CROUCH) accuracy *= 1.1;	// improve by 20%
 							break;
 					}
 				}
@@ -360,7 +364,34 @@ Person.prototype.shoot = function(coord, bodypart, accuracy) {
 
 			var chance_of_hit = Math.round(chance_range * accuracy * 100) / 100;
 
-			this.log("<a href=\"#/person/"+ this._nickname +"\">"+ this._nickname +"</a> shoots at ", target, "with", chance_of_hit, "chance of hitting.");
+			// consider marksmanship
+			chance_of_hit *= (this._stats.mrk / 100);
+
+			// max 95%
+			if(chance_of_hit > 0.95) chance_of_hit = 0.95;
+
+			this.log("<a href=\"#/person/"+ this._nickname +"\">"+ this._nickname +"</a> tries to shoot at ", target, "with", chance_of_hit, "chance of hitting.");
+
+			console.log("accuracy", accuracy);
+			console.log("chance_range", chance_range);
+			console.log("chance_of_hit", chance_of_hit);
+
+			//var success = 0;
+			//for(var i=0; i < 10; i++) {
+			//	if(chance_of_hit >= this.MT.random()) {
+			//		success++;
+			//	}
+			//}
+			//console.log("success", success);
+
+			var random = this.MT.random();
+			console.log("random", random);
+
+			if(random <= chance_of_hit) {
+				console.log("HIT!")
+			} else {
+				console.log("Miss!")
+			}
 		}.bind(this)
 	);
 

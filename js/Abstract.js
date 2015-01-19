@@ -1,5 +1,5 @@
 function Abstract() {
-
+	this.MT = new MersenneTwister();
 }
 
 /**
