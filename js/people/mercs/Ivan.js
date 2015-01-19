@@ -30,8 +30,8 @@ function Ivan(equip) {
 			.equip(west)
 			.equip(shorts)
 			.equip(ak74)
-			.equip(new $5_45MM())
-			.equip(new $5_45MM())
+			.equip(new $5_45MM(Ammo.TYPE_AP))
+			.equip(new $5_45MM(Ammo.TYPE_HP))
 			.grab(ak74);
 	}
 }

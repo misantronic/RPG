@@ -30,8 +30,8 @@ function Shadow(equip) {
 			.equip(west)
 			.equip(shorts)
 			.equip(colt)
-			.equip(new $5_56MM())
-			.equip(new $5_56MM())
+			.equip(new $5_56MM(Ammo.TYPE_BALL))
+			.equip(new $5_56MM(Ammo.TYPE_GLASER))
 			.grab(colt);
 	}
 }
