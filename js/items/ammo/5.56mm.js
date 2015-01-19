@@ -1,11 +1,13 @@
-function $5_56MM(type) {
-	if(!type) type = Ammo.TYPE_BALL;
+function $5_56MM(type, rounds) {
+	if(type == undefined) 	type = Ammo.TYPE_BALL;
+	if(rounds == undefined) rounds = 30;
 
 	Ammo.call(this, Ammo.$5_56MM, {
 		name: '5.56mm',
 		weight: 0.1,
 		size: Item.SMALL,
-		type: type
+		type: type,
+		rounds: rounds
 	});
 }
 
