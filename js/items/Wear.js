@@ -32,7 +32,7 @@ Wear.prototype._stats = {
 
 Object.defineProperty(Wear.prototype, "armor", {
 	get: function () {
-		return this._stats.armor;
+		return this._stats.armor * this._condition;
 	},
 
 	set: function(val) {
