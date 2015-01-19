@@ -22,53 +22,45 @@ function Human(stats) {
 	}
 }
 
+Human.prototype = new Abstract();
+Human.prototype.constructor = Human;
+
 Human.STAND = 'stand';
 Human.CROUCH = 'crouch';
 Human.PRONE = 'prone';
 
-Human.prototype = {
-	_name: '',
-	_nickname: '',
-	/** @type {Point} */
-	_coord: new Point(),
-
-	_stats: {
-		hea: 0,
-		agi: 0,
-		dex: 0,
-		str: 0,
-		ldr: 0,
-		wis: 0,
-		lvl: 0,
-		mec: 0,
-		exp: 0,
-		med: 0,
-		mrk: 0
-	},
-
-	_wear: {
-		head: new Wear(),
-		body: new Wear(),
-		legs: new Wear()
-	},
-
-	_hands: [],
-
-	_stance: Human.STAND,
-
-	_inventory: {
-		sm: [],
-		md: [],
-		lg: []
-	},
-
-	_thumb: Image,
-
-	_ap: Infinity,
-	_hp: 0,
-	_energy: 0,
-	_moral: 0
+Human.prototype._name = '';
+Human.prototype._nickname = '';
+Human.prototype._coord = new Point();
+Human.prototype._stats = {
+	hea: 0,
+	agi: 0,
+	dex: 0,
+	str: 0,
+	ldr: 0,
+	wis: 0,
+	lvl: 0,
+	mec: 0,
+	exp: 0,
+	med: 0,
+	mrk: 0
 };
+Human.prototype._wear = {
+	head: new Wear(),
+	body: new Wear(),
+	legs: new Wear()
+};
+Human.prototype._hands = [];
+Human.prototype._stance = Human.STAND;
+Human.prototype._inventory = {
+	sm: [],
+	md: [],
+	lg: []
+};
+Human.prototype._thumb = Image;
+Human.prototype._ap = Infinity;
+Human.prototype._hp = 0;
+Human.prototype._energy = 0;
 
 /**
  *
@@ -164,13 +156,12 @@ Human.prototype.endTurn = function() {
 /**
  *
  * @param {Point} coord
- * @returns {Object}
+ * @return {{walkingDistance: Array, sightDistance: number, cost: number}}
  */
 Human.prototype.calculateDistance = function(coord) {
 	// calculate walking distance
 	// TODO: consider world map resp. obsticales
 	var dist = Math.abs(this._coord.x - coord.x) + Math.abs(this._coord.y - coord.y);
-	var output = {};
 
 	// calculate ap-cost
 	var tileCost = 0;
@@ -180,7 +171,7 @@ Human.prototype.calculateDistance = function(coord) {
 
 	var cost = tileCost * dist;
 
-	// caluclate diagonal walking distance
+	// caluclate direct walking distance
 	var distX = [], distY = [];
 	for(var x = this._coord.x; this._coord.x < coord.x ? x <= coord.x : x >= coord.x; this._coord.x < coord.x ? x++ : x--) {
 		distX.push(x);
@@ -196,25 +187,29 @@ Human.prototype.calculateDistance = function(coord) {
 		shDist = distX.length > distY.length ? distY : distX,
 		div = Math.ceil(lgDist.length / shDist.length),
 		index = 0,
-		fullDist = [];
+		walkingDist = [];
 
 	lgDist.forEach(function(p1, i) {
 		if(i != 0 && i % div == 0) index++;
 
-		if(lgDist.type == 'x') 		fullDist.push( new Point(p1, shDist[index]) );
-		else if(lgDist.type == 'y') fullDist.push( new Point(shDist[index], p1) );
+		if(lgDist.type == 'x') 		walkingDist.push( new Point(p1, shDist[index]) );
+		else if(lgDist.type == 'y') walkingDist.push( new Point(shDist[index], p1) );
 	});
 
 	// check if last element equals the target coord
-	var lastPoint = fullDist[fullDist.length-1];
+	var lastPoint = walkingDist[walkingDist.length-1];
 	if(lastPoint.x != coord.x || lastPoint.y != coord.y) {
-		fullDist.push(coord);
+		walkingDist.push(coord);
 	}
 
-	output.fullDistance = fullDist;
-	output.cost = cost;
+	// calculate sight distance (c² = a² + b²)
+	var sightDist = Math.sqrt(Math.pow(coord.x - this._coord.x, 2) + Math.pow(coord.y - this._coord.y, 2));
 
-	return output;
+	return {
+		walkingDistance: walkingDist,
+		sightDistance: sightDist,
+		cost: cost
+	};
 };
 
 /**
@@ -224,7 +219,7 @@ Human.prototype.walk = function(coord) {
 	var distance = this.calculateDistance(coord);
 	var cost = distance.cost;
 
-	console.log("cost", cost, "distance", distance.fullDistance);
+	this.log("cost", cost, "walking distance", distance.walkingDistance, "sight distance", distance.sightDistance);
 
 	if(this._ap - cost < 0) {
 		return this;
@@ -418,16 +413,6 @@ Object.defineProperty(Human.prototype, "AP", {
 
 	set: function(val) {
 		this._ap = val;
-	}
-});
-
-Object.defineProperty(Human.prototype, "moral", {
-	get: function () {
-		return this._moral;
-	},
-
-	set: function(val) {
-		this._moral = val;
 	}
 });
 
