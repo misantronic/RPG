@@ -1,6 +1,7 @@
 function AK_74() {
 	Weapon.call(this, Weapon.ASSAULT_RIFLE, {
 		name: 'AK-74',
+		thumb: './img/weapons/ak-74.jpg',
 		damage: 28,
 		ammo: $5_45MM,
 		magazine: 30,
