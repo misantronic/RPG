@@ -37,6 +37,7 @@
 				// Weapons
 				'js/items/weapons/pistol/Beretta_92F.js',
 				'js/items/weapons/assault_rifle/Colt_Commando.js',
+				'js/items/weapons/smg/MP5K.js',
 				'js/items/weapons/assault_rifle/AK-74.js'
 			 ]
 		).done(init);
@@ -45,7 +46,7 @@
 			shadow = new Shadow(true);
 			ivan = new Ivan(true);
 
-			ivan.walk(new Point(10, 10));
+			ivan.walk(new Point(20, 20));
 
 			World.PEOPLE.push(shadow, ivan);
 
