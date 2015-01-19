@@ -34,7 +34,7 @@ Ammo.$9x19MM 	= '9x19mm';
 Ammo.$5_56MM 	= '5.56mm';
 Ammo.$5_45MM 	= '5.45mm';
 
-Ammo.TYPE_AP 		= 'ap';
-Ammo.TYPE_HP 		= 'hp';
-Ammo.TYPE_GLASER 	= 'glaser';
-Ammo.TYPE_BALL 		= 'ball';
+Ammo.TYPE_AP 		= 'ap';		// armor piercing
+Ammo.TYPE_HP 		= 'hp';		// hollow point
+Ammo.TYPE_GLASER 	= 'glaser'; // glaser
+Ammo.TYPE_BALL 		= 'ball';	// standard ball ammo
