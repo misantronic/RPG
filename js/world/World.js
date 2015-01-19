@@ -6,7 +6,20 @@ World = {
 			}
 
 		}
+	},
+
+	/**
+	 *
+	 * @param {String} team
+	 * @param {Person} person
+	 */
+	joinTeam: function(team, person) {
+		World.TEAMS[team].push(person);
 	}
 };
 
 World.PEOPLE = [];
+World.TEAMS = {
+	A: [],
+	B: []
+};

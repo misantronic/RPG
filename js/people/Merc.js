@@ -1,6 +1,6 @@
 function Merc(stats) {
-	Human.call(this, stats);
+	Person.call(this, stats);
 }
 
-Merc.prototype = new Human();
+Merc.prototype = new Person();
 Merc.prototype.constructor = Merc;

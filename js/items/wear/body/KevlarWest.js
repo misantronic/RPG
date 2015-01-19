@@ -3,7 +3,7 @@
  * @constructor
  */
 function KevlarWest() {
-	Wear.call(this, Human.BODY, {
+	Wear.call(this, Person.BODY, {
 		name: 'Kevlar West',
 		armor: 60,
 		weight: 1,

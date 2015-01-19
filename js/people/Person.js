@@ -3,7 +3,7 @@
  * @param {Object} [stats]
  * @constructor
  */
-function Human(stats) {
+function Person(stats) {
 	if(stats) {
 		// reset
 		this._stats = {};
@@ -22,44 +22,44 @@ function Human(stats) {
 	}
 }
 
-Human.prototype = new Abstract();
-Human.prototype.constructor = Human;
+Person.prototype = new Abstract();
+Person.prototype.constructor = Person;
 
-Human.STAND = 'stand';
-Human.CROUCH = 'crouch';
-Human.PRONE = 'prone';
+Person.STAND = 'stand';
+Person.CROUCH = 'crouch';
+Person.PRONE = 'prone';
 
-Human.HEAD = 'head';
-Human.BODY = 'body';
-Human.LEGS = 'legs';
-
-/**
- *
- * @type {string}
- * @private
- */
-Human.prototype._name = '';
+Person.HEAD = 'head';
+Person.BODY = 'body';
+Person.LEGS = 'legs';
 
 /**
  *
  * @type {string}
  * @private
  */
-Human.prototype._nickname = '';
+Person.prototype._name = '';
+
+/**
+ *
+ * @type {string}
+ * @private
+ */
+Person.prototype._nickname = '';
 
 /**
  *
  * @type {Point}
  * @private
  */
-Human.prototype._coord = new Point();
+Person.prototype._coord = new Point();
 
 /**
  *
  * @type {{hea: number, agi: number, dex: number, str: number, ldr: number, wis: number, lvl: number, mec: number, exp: number, med: number, mrk: number}}
  * @private
  */
-Human.prototype._stats = {
+Person.prototype._stats = {
 	hea: 0,
 	agi: 0,
 	dex: 0,
@@ -78,7 +78,7 @@ Human.prototype._stats = {
  * @type {{head: Wear, body: Wear, legs: Wear}}
  * @private
  */
-Human.prototype._wear = {
+Person.prototype._wear = {
 	head: new Wear(),
 	body: new Wear(),
 	legs: new Wear()
@@ -89,21 +89,21 @@ Human.prototype._wear = {
  * @type {Array}
  * @private
  */
-Human.prototype._hands = [];
+Person.prototype._hands = [];
 
 /**
  *
  * @type {string}
  * @private
  */
-Human.prototype._stance = Human.STAND;
+Person.prototype._stance = Person.STAND;
 
 /**
  *
  * @type {{sm: Array, md: Array, lg: Array}}
  * @private
  */
-Human.prototype._inventory = {
+Person.prototype._inventory = {
 	sm: [],
 	md: [],
 	lg: []
@@ -114,27 +114,27 @@ Human.prototype._inventory = {
  * @type {Number}
  * @private
  */
-Human.prototype._ap = Infinity;
+Person.prototype._ap = Infinity;
 
 /**
  *
  * @type {number}
  * @private
  */
-Human.prototype._hp = 0;
+Person.prototype._hp = 0;
 
 /**
  *
  * @type {number}
  * @private
  */
-Human.prototype._energy = 0;
+Person.prototype._energy = 0;
 
 /**
  *
  * @param {Wear} wear
  */
-Human.prototype.putOn = function(wear) {
+Person.prototype.putOn = function(wear) {
 	if(!(wear instanceof Wear)) {
 		console.warn(wear, "must be an instance of Wear().");
 		return;
@@ -149,7 +149,7 @@ Human.prototype.putOn = function(wear) {
  *
  * @param {Wear} wear
  */
-Human.prototype.takeOff = function(wear) {
+Person.prototype.takeOff = function(wear) {
 	this._wear[wear.type] = '';
 
 	return this;
@@ -159,7 +159,7 @@ Human.prototype.takeOff = function(wear) {
  *
  * @param {Item} item
  */
-Human.prototype.equip = function(item) {
+Person.prototype.equip = function(item) {
 	if(!(item instanceof Item)) {
 		console.warn(item, "must be an instance of Item().");
 		return;
@@ -170,7 +170,7 @@ Human.prototype.equip = function(item) {
 	return this;
 };
 
-Human.prototype.unequip = function(item) {
+Person.prototype.unequip = function(item) {
 	// remove from inventory
 	this._inventory[item.size].forEach(function(invItem, i) {
 		if(invItem === item) this._inventory[item.size].splice(i, 1);
@@ -188,8 +188,8 @@ Human.prototype.unequip = function(item) {
  *
  * @param {Item} item
  */
-Human.prototype.grab = function(item) {
-	// check if Human can grab item
+Person.prototype.grab = function(item) {
+	// check if Person can grab item
 	if(this._hands.length == 2) return;
 	for(var i=0; i < this._hands.length; i++) {
 		/** @type {Item} handItem */
@@ -205,7 +205,7 @@ Human.prototype.grab = function(item) {
 	return this;
 };
 
-Human.prototype.startTurn = function() {
+Person.prototype.startTurn = function() {
 	// calculate APs
 	var ap = ((this._stats.agi * 0.9) + (this._stats.dex * 0.6) + (this._energy * 0.6) + this._hp) / 3;
 	ap = Math.round(ap);
@@ -215,7 +215,7 @@ Human.prototype.startTurn = function() {
 	return this;
 };
 
-Human.prototype.endTurn = function() {
+Person.prototype.endTurn = function() {
 
 
 	return this;
@@ -227,16 +227,16 @@ Human.prototype.endTurn = function() {
  * @return {{walkingDistance: Array, sightDistance: number, cost: number}}
  * @private
  */
-Human.prototype._calculateDistance = function(coord) {
+Person.prototype._calculateDistance = function(coord) {
 	// calculate walking distance
 	// TODO: consider world map resp. obsticales
 	var dist = Math.abs(this._coord.x - coord.x) + Math.abs(this._coord.y - coord.y);
 
 	// calculate ap-cost
 	var tileCost = 0;
-	if(this._stance == Human.STAND) 		tileCost = 8;
-	else if(this._stance == Human.CROUCH) 	tileCost = 12;
-	else if(this._stance == Human.PRONE) 	tileCost = 16;
+	if(this._stance == Person.STAND) 		tileCost = 8;
+	else if(this._stance == Person.CROUCH) 	tileCost = 12;
+	else if(this._stance == Person.PRONE) 	tileCost = 16;
 
 	var cost = tileCost * dist;
 
@@ -285,7 +285,7 @@ Human.prototype._calculateDistance = function(coord) {
 /**
  * @param {Point} coord
  */
-Human.prototype.walk = function(coord) {
+Person.prototype.walk = function(coord) {
 	var distance = this._calculateDistance(coord);
 	var cost = distance.cost;
 
@@ -309,10 +309,10 @@ Human.prototype.walk = function(coord) {
 /**
  *
  * @param {Point} coord
- * @param {Human.HEAD|Human.BODY|Human.LEGS} bodypart
+ * @param {Person.HEAD|Person.BODY|Person.LEGS} bodypart
  * @param {Number} accuracy 0.0 - 1.0
  */
-Human.prototype.shoot = function(coord, bodypart, accuracy) {
+Person.prototype.shoot = function(coord, bodypart, accuracy) {
 	var distance = this._calculateDistance(coord),
 		target = "("+coord.x+"/"+coord.y+")";
 
@@ -320,10 +320,10 @@ Human.prototype.shoot = function(coord, bodypart, accuracy) {
 	accuracy = 0.5 + (0.5 * accuracy);
 
 	// get person to shoot at
-	/** @type {Human} person */
+	/** @type {Person} person */
 	var person;
 	World.PEOPLE.forEach(
-		/** @param {Human} somePerson */
+		/** @param {Person} somePerson */
 		function(somePerson) {
 			if(somePerson.coord.x == coord.x && somePerson.coord.y == coord.y) person = somePerson;
 		}
@@ -340,17 +340,17 @@ Human.prototype.shoot = function(coord, bodypart, accuracy) {
 				// calculate stance factor
 				if(person.stance != this._stance) {
 					switch(this._stance) {
-						case Human.STAND:
-							if(person.stance == Human.CROUCH) accuracy /= 1.1;	// reduce by 10%
-							if(person.stance == Human.PRONE) accuracy /= 1.2;	// reduce by 20%
+						case Person.STAND:
+							if(person.stance == Person.CROUCH) accuracy /= 1.1;	// reduce by 10%
+							if(person.stance == Person.PRONE) accuracy /= 1.2;	// reduce by 20%
 							break;
-						case Human.CROUCH:
-							if(person.stance == Human.STAND) accuracy /= 1.1;	// reduce by 10%
-							if(person.stance == Human.PRONE) accuracy /= 1.2;	// reduce by 20%
+						case Person.CROUCH:
+							if(person.stance == Person.STAND) accuracy /= 1.1;	// reduce by 10%
+							if(person.stance == Person.PRONE) accuracy /= 1.2;	// reduce by 20%
 							break;
-						case Human.PRONE:
-							if(person.stance == Human.STAND) accuracy /= 1.1;	// reduce by 10%
-							if(person.stance == Human.CROUCH) accuracy /= 1.2;	// reduce by 20%
+						case Person.PRONE:
+							if(person.stance == Person.STAND) accuracy /= 1.1;	// reduce by 10%
+							if(person.stance == Person.CROUCH) accuracy /= 1.2;	// reduce by 20%
 							break;
 					}
 				}
@@ -369,13 +369,13 @@ Human.prototype.shoot = function(coord, bodypart, accuracy) {
 
 /**
  *
- * @param {String} stance {Human.STAND|Human.CROUCH|Human.PRONE}
+ * @param {String} stance {Person.STAND|Person.CROUCH|Person.PRONE}
  */
-Human.prototype.changeStance = function(stance) {
+Person.prototype.changeStance = function(stance) {
 	this._stance = stance;
 };
 
-Object.defineProperty(Human.prototype, "weightInKG", {
+Object.defineProperty(Person.prototype, "weightInKG", {
 	get: function () {
 		var weight = 0,
 			/** @type {Item} item **/
@@ -391,7 +391,7 @@ Object.defineProperty(Human.prototype, "weightInKG", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "weightInPerc", {
+Object.defineProperty(Person.prototype, "weightInPerc", {
 	get: function () {
 		return Math.round(this.weightInKG / this.strength * 100);
 	}
@@ -399,7 +399,7 @@ Object.defineProperty(Human.prototype, "weightInPerc", {
 
 // GETTER / SETTER
 
-Object.defineProperty(Human.prototype, "name", {
+Object.defineProperty(Person.prototype, "name", {
 	get: function () {
 		return this._name;
 	},
@@ -409,7 +409,7 @@ Object.defineProperty(Human.prototype, "name", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "nickname", {
+Object.defineProperty(Person.prototype, "nickname", {
 	get: function () {
 		return this._nickname;
 	},
@@ -419,7 +419,7 @@ Object.defineProperty(Human.prototype, "nickname", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "health", {
+Object.defineProperty(Person.prototype, "health", {
 	get: function () {
 		return this._stats.hea;
 	},
@@ -429,7 +429,7 @@ Object.defineProperty(Human.prototype, "health", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "agility", {
+Object.defineProperty(Person.prototype, "agility", {
 	get: function () {
 		return this._stats.agi;
 	},
@@ -439,7 +439,7 @@ Object.defineProperty(Human.prototype, "agility", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "dexterity", {
+Object.defineProperty(Person.prototype, "dexterity", {
 	get: function () {
 		return this._stats.dex;
 	},
@@ -449,7 +449,7 @@ Object.defineProperty(Human.prototype, "dexterity", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "strength", {
+Object.defineProperty(Person.prototype, "strength", {
 	get: function () {
 		return this._stats.str;
 	},
@@ -459,7 +459,7 @@ Object.defineProperty(Human.prototype, "strength", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "leadership", {
+Object.defineProperty(Person.prototype, "leadership", {
 	get: function () {
 		return this._stats.ldr;
 	},
@@ -469,7 +469,7 @@ Object.defineProperty(Human.prototype, "leadership", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "wisdom", {
+Object.defineProperty(Person.prototype, "wisdom", {
 	get: function () {
 		return this._stats.wis;
 	},
@@ -479,7 +479,7 @@ Object.defineProperty(Human.prototype, "wisdom", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "level", {
+Object.defineProperty(Person.prototype, "level", {
 	get: function () {
 		return this._stats.lvl;
 	},
@@ -489,7 +489,7 @@ Object.defineProperty(Human.prototype, "level", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "mecanical", {
+Object.defineProperty(Person.prototype, "mecanical", {
 	get: function () {
 		return this._stats.mec;
 	},
@@ -499,7 +499,7 @@ Object.defineProperty(Human.prototype, "mecanical", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "explosives", {
+Object.defineProperty(Person.prototype, "explosives", {
 	get: function () {
 		return this._stats.exp;
 	},
@@ -509,7 +509,7 @@ Object.defineProperty(Human.prototype, "explosives", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "medical", {
+Object.defineProperty(Person.prototype, "medical", {
 	get: function () {
 		return this._stats.med;
 	},
@@ -519,7 +519,7 @@ Object.defineProperty(Human.prototype, "medical", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "marksmanship", {
+Object.defineProperty(Person.prototype, "marksmanship", {
 	get: function () {
 		return this._stats.mrk;
 	},
@@ -529,7 +529,7 @@ Object.defineProperty(Human.prototype, "marksmanship", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "AP", {
+Object.defineProperty(Person.prototype, "AP", {
 	get: function () {
 		return this._ap;
 	},
@@ -539,7 +539,7 @@ Object.defineProperty(Human.prototype, "AP", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "hp", {
+Object.defineProperty(Person.prototype, "hp", {
 	get: function () {
 		return this._hp;
 	},
@@ -549,7 +549,7 @@ Object.defineProperty(Human.prototype, "hp", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "energy", {
+Object.defineProperty(Person.prototype, "energy", {
 	get: function () {
 		return this._energy;
 	},
@@ -559,25 +559,25 @@ Object.defineProperty(Human.prototype, "energy", {
 	}
 });
 
-Object.defineProperty(Human.prototype, "wear", {
+Object.defineProperty(Person.prototype, "wear", {
 	get: function () {
 		return this._wear;
 	}
 });
 
-Object.defineProperty(Human.prototype, "stance", {
+Object.defineProperty(Person.prototype, "stance", {
 	get: function () {
 		return this._stance;
 	}
 });
 
-Object.defineProperty(Human.prototype, "inventory", {
+Object.defineProperty(Person.prototype, "inventory", {
 	get: function () {
 		return this._inventory;
 	}
 });
 
-Object.defineProperty(Human.prototype, "coord", {
+Object.defineProperty(Person.prototype, "coord", {
 	/** @return {Point} */
 	get: function () {
 		return this._coord;

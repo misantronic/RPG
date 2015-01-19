@@ -21,7 +21,7 @@
 				'js/items/Weapon.js',
 
 				// people
-                'js/people/Human.js',
+                'js/people/Person.js',
                 'js/people/Merc.js',
                 'js/people/mercs/Shadow.js',
                 'js/people/mercs/Ivan.js',
@@ -44,14 +44,17 @@
 			 ]
 		).done(init);
 
+		var shadow, ivan;
+
 		function init() {
 			shadow = new Shadow(true);
 			ivan = new Ivan(true);
 
-			console.log(shadow);
-			console.log(ivan);
-
 			World.addPeople(shadow, ivan);
+			World.joinTeam('A', shadow);
+			World.joinTeam('B', ivan);
+
+			console.log(World.PEOPLE);
 
 			ivan.walk(new Point(20, 20));
 

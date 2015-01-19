@@ -1,6 +1,6 @@
 /**
  *
- * @param {Human.HEAD|Human.BODY|Human.LEGS} [type]
+ * @param {Person.HEAD|Person.BODY|Person.LEGS} [type]
  * @param {Object} [stats]
  * @constructor
  */
