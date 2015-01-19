@@ -2,6 +2,9 @@ function Item() {
 
 }
 
+Item.prototype = new Abstract();
+Item.prototype.constructor = Item;
+
 Item.prototype._name = '';
 Item.prototype._weight = 0;
 Item.prototype._size = '';
