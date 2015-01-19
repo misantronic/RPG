@@ -10,6 +10,12 @@ Item.prototype._weight = 0;
 Item.prototype._size = '';
 Item.prototype._type = '';
 Item.prototype._hands = 0;
+/**
+ *
+ * @type {number} 0 - 1
+ * @private
+ */
+Item.prototype._condition = 1;
 
 Item.SMALL 	= 'sm';
 Item.MEDIUM = 'md';
@@ -66,5 +72,16 @@ Object.defineProperty(Item.prototype, "hands", {
 
 	set: function(val) {
 		this._hands = val;
+	}
+});
+
+Object.defineProperty(Item.prototype, "condition", {
+	/** @return {number} 0 - 1 */
+	get: function () {
+		return this._condition;
+	},
+
+	set: function(val) {
+		this._condition = val;
 	}
 });
