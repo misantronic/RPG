@@ -14,7 +14,9 @@ Abstract.prototype._log_output = "";
 Abstract.prototype.log = function() {
 	var msg = "";
 	for (var i in arguments) {
-		msg += arguments[i] + ' ';
+		if(arguments.hasOwnProperty(i)) {
+			msg += arguments[i] + ' ';
+		}
 	}
 
 	document.getElementById('log').innerHTML += msg +"<br/>";
