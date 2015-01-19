@@ -157,8 +157,9 @@ Human.prototype.endTurn = function() {
  *
  * @param {Point} coord
  * @return {{walkingDistance: Array, sightDistance: number, cost: number}}
+ * @private
  */
-Human.prototype.calculateDistance = function(coord) {
+Human.prototype._calculateDistance = function(coord) {
 	// calculate walking distance
 	// TODO: consider world map resp. obsticales
 	var dist = Math.abs(this._coord.x - coord.x) + Math.abs(this._coord.y - coord.y);
@@ -216,7 +217,7 @@ Human.prototype.calculateDistance = function(coord) {
  * @param {Point} coord
  */
 Human.prototype.walk = function(coord) {
-	var distance = this.calculateDistance(coord);
+	var distance = this._calculateDistance(coord);
 	var cost = distance.cost;
 
 	this.log("cost", cost, "walking distance", distance.walkingDistance, "sight distance", distance.sightDistance);
