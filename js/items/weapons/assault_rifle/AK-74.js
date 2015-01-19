@@ -3,7 +3,7 @@ function AK_74() {
 		name: 'AK-74',
 		thumb: './img/weapons/ak-74.jpg',
 		damage: 28,
-		ammo: $5_45MM,
+		caliber: $5_45MM,
 		magazine: 30,
 		range: 35,
 		ap: [ 5, 9 ],

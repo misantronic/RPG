@@ -3,7 +3,7 @@ function Colt_Commando() {
 		name: 'Colt Commando',
 		thumb: './img/weapons/colt_commando.jpg',
 		damage: 29,
-		ammo: $5_56MM,
+		caliber: $5_56MM,
 		magazine: 30,
 		range: 20,
 		ap: [ 6, 10 ],

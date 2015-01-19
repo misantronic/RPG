@@ -3,7 +3,7 @@ function Beretta_92F() {
 		name: 'Beretta 92F',
 		thumb: './img/weapons/beretta_92f.jpg',
 		damage: 22,
-		ammo: $9x19MM,
+		caliber: $9x19MM,
 		magazine: 15,
 		range: 12,
 		ap: [ 6 ],
