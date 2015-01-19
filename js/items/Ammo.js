@@ -1,16 +1,16 @@
 /**
  *
- * @param {String} type {Ammo.$9MM}
+ * @param {String} caliber {Ammo.$9x19MM}
  * @param {Object} [stats]
  * @constructor
  */
-function Ammo(type, stats) {
-	if(!type) return;
+function Ammo(caliber, stats) {
+	if(!caliber) return;
 
 	// reset
 	this._stats = {};
 
-	this._type = type;
+	this._caliber = caliber;
 
 	if(stats) {
 		for(var stat in stats) {
@@ -24,10 +24,17 @@ function Ammo(type, stats) {
 Ammo.prototype = new Item();
 Ammo.constructor = Ammo;
 
+Ammo.prototype._caliber = '';
+Ammo.prototype._type = '';
 Ammo.prototype._stats = {
 
 };
 
-Ammo.$9MM = '9mm';
-Ammo.$5_56MM = '5.56mm';
-Ammo.$5_45MM = '5.45mm';
+Ammo.$9x19MM 	= '9x19mm';
+Ammo.$5_56MM 	= '5.56mm';
+Ammo.$5_45MM 	= '5.45mm';
+
+Ammo.TYPE_AP 		= 'ap';
+Ammo.TYPE_HP 		= 'hp';
+Ammo.TYPE_GLASER 	= 'glaser';
+Ammo.TYPE_BALL 		= 'ball';

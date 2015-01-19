@@ -1,8 +1,11 @@
-function $5_45MM() {
+function $5_45MM(type) {
+	if(!type) type = Ammo.TYPE_BALL;
+
 	Ammo.call(this, Ammo.$5_45MM, {
 		name: '5.45mm',
 		weight: 0.1,
-		size: Item.SMALL
+		size: Item.SMALL,
+		type: type
 	});
 }
 
