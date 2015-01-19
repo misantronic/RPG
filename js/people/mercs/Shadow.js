@@ -14,7 +14,6 @@ function Shadow(equip) {
 		explosives: 22,
 		mecanical: 35,
 		medical: 30,
-		moral: 100,
 		energy: 100,
 		hp: 95
 	});

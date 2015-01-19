@@ -14,7 +14,6 @@ function Ivan(equip) {
 		explosives: 55,
 		mecanical: 14,
 		medical: 15,
-		moral: 100,
 		energy: 100,
 		hp: 94
 	});
