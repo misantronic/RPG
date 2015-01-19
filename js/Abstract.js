@@ -17,10 +17,6 @@ Abstract.prototype.log = function() {
 		msg += arguments[i] + ' ';
 	}
 
-	this._log_output += msg + "\n";
-
-	console.log(msg);
-
 	document.getElementById('log').innerHTML += msg +"<br/>";
 };
 
