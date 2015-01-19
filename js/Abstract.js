@@ -20,6 +20,8 @@ Abstract.prototype.log = function() {
 	this._log_output += msg + "\n";
 
 	console.log(msg);
+
+	document.getElementById('log').innerHTML += msg +"<br/>";
 };
 
 // GETTER / SETTER
