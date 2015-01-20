@@ -2,11 +2,11 @@ function Beretta_92F() {
 	Weapon.call(this, Weapon.PISTOL, {
 		name: 'Beretta 92F',
 		thumb: './img/weapons/beretta_92f.jpg',
-		damage: 22,
+		damage: 23,
 		caliber: $9x19MM,
 		magazine: 15,
 		range: 12,
-		ap: [ 6 ],
+		ap: [ 5 ],
 		weight: 1.1,
 		size: Item.SMALL,
 		hands: 1

@@ -5,8 +5,8 @@ function MP5K() {
 		damage: 23,
 		ammo: $9x19MM,
 		magazine: 30,
-		range: 20,
-		ap: [ 6, 10 ],
+		range: 11,
+		ap: [ 6, 9, 10 ],
 		weight: 2.1,
 		size: Item.MEDIUM,
 		hands: 1
