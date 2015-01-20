@@ -412,7 +412,7 @@ Person.prototype.shoot = function(coord, bodypart, accuracy, rounds) {
 					// hit
 					var dmg = target.dealDamage(weapon, bodypart);
 
-					var msg = me + " deals "+ dmg +" damage on "+ targetName +".";
+					var msg = me + " deals "+ dmg +" damage on "+ targetName +" leaving him with "+ target.hp +"hp.";
 					if(target.bleeding) msg += " "+ targetName + " is bleeding.";
 
 					// check death
@@ -448,6 +448,7 @@ Person.prototype.dealDamage = function(weapon, bodypart) {
 
 	// armor reduces damage
 	damage = weapon.damage - armorLoss;
+	if(damage < 0) damage = 0;
 
 	// impact of the specific ammo on the body damage
 	damage *= ammoBodyProp;
@@ -701,7 +702,7 @@ Object.defineProperty(Person.prototype, "bleeding", {
 
 Object.defineProperty(Person.prototype, "logName", {
 	get: function () {
-		return "<a href=\"#/person/"+ this._nickname +"\">"+ this._nickname +"</a>";
+		return "<a href=\"#/people/"+ this._nickname +"\">"+ this._nickname +"</a>";
 	}
 });
 
