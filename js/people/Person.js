@@ -454,6 +454,7 @@ Person.prototype.dealDamage = function(weapon, bodypart) {
 		damage 			= 0,
 		armorLoss 		= weapon.damage * (wear.armor * ammoArmorProp);
 
+	// calculate damage
 	damage = (weapon.damage * ammoBodyProp) - (wear.armor * ammoArmorProp);
 	if(damage < 0) damage = 0;
 
