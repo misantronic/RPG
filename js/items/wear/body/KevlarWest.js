@@ -5,7 +5,7 @@
 function KevlarWest() {
 	Wear.call(this, Person.BODY, {
 		name: 'Kevlar West',
-		armor: 0.6,
+		armor: 1,
 		weight: 1,
 		size: Item.MEDIUM
 	});

@@ -5,7 +5,7 @@
 function KevlarHelmet() {
 	Wear.call(this, Person.HEAD, {
 		name: 'Kevlar Helmet',
-		armor: 0.6,
+		armor: 1,
 		weight: 0.5,
 		size: Item.SMALL
 	});
