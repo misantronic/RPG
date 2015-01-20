@@ -368,6 +368,9 @@ Person.prototype.shoot = function(coord, bodypart, accuracy) {
 			// todo: consider burst mode/auto
 			weapon.ammo.rounds -= 1;
 
+			// reduce weapon condition
+			weapon.condition -= 0.0015;
+
 			// calculate range factor
 			var chance_range = weapon.range / distance.sightDistance;
 

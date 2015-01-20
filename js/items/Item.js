@@ -83,5 +83,6 @@ Object.defineProperty(Item.prototype, "condition", {
 
 	set: function(val) {
 		this._condition = val;
+		this._condition = Math.round(this._condition * 1000) / 1000;
 	}
 });
