@@ -15,6 +15,21 @@ World = {
 	 */
 	joinTeam: function(team, person) {
 		World.TEAMS[team].push(person);
+	},
+
+	/**
+	 *
+	 * @param {Point} coord
+	 * @return {Person|null}
+	 */
+	getPerson: function(coord) {
+		var person;
+		for(var i=0; i < this.PEOPLE.length; i++) {
+			person = this.PEOPLE[i];
+			if(person.coord.x == coord.x && person.coord.y == coord.y && !person.isDead)
+				return person;
+		}
+		return null;
 	}
 };
 
