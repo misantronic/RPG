@@ -454,8 +454,6 @@ Person.prototype.dealDamage = function(weapon, bodypart) {
 	// round damage
 	damage = Math.round(damage);
 
-	console.log("weapon damage:", weapon.damage, "ammo type:", weapon.ammo.type, "armor:", wear.armor, "armorLoss:", armorLoss);
-
 	this._hp -= damage;
 
 	// armors condition is reduced based on the damage it prevented
