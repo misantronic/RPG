@@ -336,13 +336,13 @@ Person.prototype.walk = function(coord) {
  * @param {Point} coord
  * @param {Person.HEAD|Person.BODY|Person.LEGS} bodypart
  * @param {Number} accuracy 0.0 - 1.0
- * @param {Number} rounds
+ * @param {Number} rounds number of bullets
  */
 Person.prototype.shoot = function(coord, bodypart, accuracy, rounds) {
 	if(rounds == undefined) rounds = 1;
 
 	var distance = this._calculateDistance(coord),
-		target = "("+coord.x+"/"+coord.y+")",
+		targetName = "("+coord.x+"/"+coord.y+")",
 		me = this.logName;
 
 	// calculate accuracy
@@ -370,60 +370,60 @@ Person.prototype.shoot = function(coord, bodypart, accuracy, rounds) {
 				// calculate range factor
 				var chance_range = weapon.range / distance.sightDistance;
 
-				// get enemy to shoot at
-				/** @type {Person|null} enemy */
-				var enemy = World.getPerson(coord);
+				// get target to shoot at
+				/** @type {Person|null} target */
+				var target = World.getPerson(coord);
 
-				if(enemy) {
-					// calculate stance factor
-					if(enemy.stance != this._stance) {
-						switch(this._stance) {
-							case Person.STAND:
-								if(enemy.stance == Person.CROUCH) accuracy /= 1.1;	// reduce by 10%
-								if(enemy.stance == Person.PRONE) accuracy /= 1.2;	// reduce by 20%
-								break;
-							case Person.CROUCH:
-								if(enemy.stance == Person.STAND) accuracy *= 1.1;	// improve by 10%
-								if(enemy.stance == Person.PRONE) accuracy /= 1.1;	// reduce by 10%
-								break;
-							case Person.PRONE:
-								if(enemy.stance == Person.STAND) accuracy *= 1.2;	// improve by 20%
-								if(enemy.stance == Person.CROUCH) accuracy *= 1.1;	// improve by 20%
-								break;
-							default:
-						}
+				if(!target) return;
+
+				// calculate stance factor
+				if(target.stance != this._stance) {
+					switch(this._stance) {
+						case Person.STAND:
+							if(target.stance == Person.CROUCH) accuracy /= 1.1;	// reduce by 10%
+							if(target.stance == Person.PRONE) accuracy /= 1.2;	// reduce by 20%
+							break;
+						case Person.CROUCH:
+							if(target.stance == Person.STAND) accuracy *= 1.1;	// improve by 10%
+							if(target.stance == Person.PRONE) accuracy /= 1.1;	// reduce by 10%
+							break;
+						case Person.PRONE:
+							if(target.stance == Person.STAND) accuracy *= 1.2;	// improve by 20%
+							if(target.stance == Person.CROUCH) accuracy *= 1.1;	// improve by 20%
+							break;
+						default:
+					}
+				}
+
+				targetName = target.logName;
+
+				var chance_of_hit = Math.round(chance_range * accuracy * 100) / 100;
+				var random = this.MT.random();
+
+				// consider marksmanship
+				chance_of_hit *= (this._stats.mrk / 100);
+
+				// max 95% change of hit
+				if(chance_of_hit > 0.95) chance_of_hit = 0.95;
+
+				this.log(me +" tries to shoot "+ targetName +" with "+ chance_of_hit +" chance of hitting.");
+
+				if(random <= chance_of_hit) {
+					// hit
+					var dmg = target.dealDamage(weapon, bodypart);
+
+					var msg = me + " deals "+ dmg +" damage on "+ targetName +".";
+					if(target.bleeding) msg += " "+ targetName + " is bleeding.";
+
+					// check death
+					if(target.isDead) {
+						msg += "<br/>"+ target.logName +" dies.";
 					}
 
-					target = enemy.logName;
-
-					var chance_of_hit = Math.round(chance_range * accuracy * 100) / 100;
-					var random = this.MT.random();
-
-					// consider marksmanship
-					chance_of_hit *= (this._stats.mrk / 100);
-
-					// max 95% change of hit
-					if(chance_of_hit > 0.95) chance_of_hit = 0.95;
-
-					this.log(me +" tries to shoot "+ target +" with "+ chance_of_hit +" chance of hitting.");
-
-					if(random <= chance_of_hit) {
-						if(enemy) {
-							var dmg = enemy.dealDamage(weapon, bodypart);
-
-							var msg = me + " deals "+ dmg +" damage on "+ target +".";
-							if(enemy.bleeding) msg += " "+ target + " is bleeding.";
-
-							// check death
-							if(enemy.isDead) {
-								msg += "<br/>"+ enemy.logName +" dies.";
-							}
-
-							this.log(msg);
-						}
-					} else {
-						this.log(me, "misses.");
-					}
+					this.log(msg);
+				} else {
+					// miss
+					this.log(me, "misses.");
 				}
 			}
 		}.bind(this)
