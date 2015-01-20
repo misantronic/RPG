@@ -409,17 +409,19 @@ Person.prototype.shoot = function(coord, bodypart, accuracy) {
 			this.log(me +" tries to shoot "+ target +" with "+ chance_of_hit +" chance of hitting.");
 
 			if(random <= chance_of_hit) {
-				var dmg = enemy.dealDamage(weapon, bodypart);
+				if(enemy) {
+					var dmg = enemy.dealDamage(weapon, bodypart);
 
-				var msg = me + " deals "+ dmg +" damage on "+ target +".";
-				if(enemy.bleeding) msg += " "+ target + " is bleeding.";
+					var msg = me + " deals "+ dmg +" damage on "+ target +".";
+					if(enemy.bleeding) msg += " "+ target + " is bleeding.";
 
-				// check death
-				if(enemy.hp <= 0) {
-					msg += "<br/>"+ enemy.logName +" dies.";
+					// check death
+					if(enemy.hp <= 0) {
+						msg += "<br/>"+ enemy.logName +" dies.";
+					}
+
+					this.log(msg);
 				}
-
-				this.log(msg);
 			} else {
 				this.log(me, "misses.");
 			}
