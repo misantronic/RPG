@@ -314,7 +314,7 @@ Person.prototype.walk = function(coord) {
 	var distance = this._calculateDistance(coord);
 	var cost = distance.cost;
 
-	this.log("<a href=\"#/person/"+ this._nickname +"\">"+ this._nickname +"</a> walks from ("+ this._coord.x +"/"+ this._coord.y +") to ("+ coord.x +"/"+ coord.y +")");
+	this.log(this.logName +" walks from ("+ this._coord.x +"/"+ this._coord.y +") to ("+ coord.x +"/"+ coord.y +")");
 
 	console.log("- cost", cost);
 	console.log("- walking distance", distance.walkingDistance);
@@ -340,7 +340,7 @@ Person.prototype.walk = function(coord) {
 Person.prototype.shoot = function(coord, bodypart, accuracy) {
 	var distance = this._calculateDistance(coord),
 		target = "("+coord.x+"/"+coord.y+")",
-		me = "<a href=\"#/enemy/"+ this._nickname +"\">"+ this._nickname +"</a>";
+		me = this.logName;
 
 	// calculate accuracy
 	accuracy = 0.5 + (0.5 * accuracy);
@@ -391,7 +391,7 @@ Person.prototype.shoot = function(coord, bodypart, accuracy) {
 					}
 				}
 
-				target = "<a href=\"#/enemy/"+ enemy.nickname +"\">"+ enemy.nickname +"</a>";
+				target = enemy.logName;
 			}
 
 			var chance_of_hit = Math.round(chance_range * accuracy * 100) / 100;
@@ -403,13 +403,18 @@ Person.prototype.shoot = function(coord, bodypart, accuracy) {
 			// max 95% change of hit
 			if(chance_of_hit > 0.95) chance_of_hit = 0.95;
 
-			this.log(me, "tries to shoot at ", target, "with", chance_of_hit, "chance of hitting.");
+			this.log(me +" tries to shoot "+ target +" with "+ chance_of_hit +" chance of hitting.");
 
 			if(random <= chance_of_hit) {
 				var dmg = enemy.dealDamage(weapon, bodypart);
 
 				var msg = me + " deals "+ dmg +" damage on "+ target +".";
 				if(enemy.bleeding) msg += " "+ target + " is bleeding.";
+
+				// check death
+				if(enemy.hp <= 0) {
+					msg += "<br/>"+ enemy.logName +" dies.";
+				}
 
 				this.log(msg);
 			} else {
@@ -429,12 +434,27 @@ Person.prototype.shoot = function(coord, bodypart, accuracy) {
  */
 Person.prototype.dealDamage = function(weapon, bodypart) {
 	/** @type {Wear} wear */
-	var wear = this._wear[bodypart];
-	var damage = weapon.damage - weapon.damage * wear.armor;
-	console.log(weapon.damage, weapon.ammo.type, wear.armor);
-	console.log("damage:", damage);
+	var wear 			= this._wear[bodypart],
+		ammoArmorProp 	= Ammo.PROPERTIES[weapon.ammo.type][0],
+		ammoBodyProp 	= Ammo.PROPERTIES[weapon.ammo.type][1],
+		damage 			= 0,
+		armorLoss 		= weapon.damage * (wear.armor * ammoArmorProp);
+
+	// armor reduces damage
+	damage = weapon.damage - armorLoss;
+
+	// impact of the specific ammo on the body damage
+	damage *= ammoBodyProp;
+
+	// round damage
+	damage = Math.round(damage);
+
+	console.log("weapon damage:", weapon.damage, "ammo type:", weapon.ammo.type, "armor:", wear.armor, "armorLoss:", armorLoss);
 
 	this._hp -= damage;
+
+	// armors condition is reduced based on the damage it prevented
+	wear.condition -= (armorLoss / 50);
 
 	// calculate bleeding (40% chance)
 	if(!this._bleeding) this._bleeding = damage > 15 && this.MT.random() <= 0.4;
@@ -672,5 +692,11 @@ Object.defineProperty(Person.prototype, "bleeding", {
 	/** @param {Boolean} val */
 	set: function(val) {
 		this._bleeding = val;
+	}
+});
+
+Object.defineProperty(Person.prototype, "logName", {
+	get: function () {
+		return "<a href=\"#/person/"+ this._nickname +"\">"+ this._nickname +"</a>";
 	}
 });
