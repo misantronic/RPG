@@ -334,6 +334,14 @@ Person.prototype.walk = function(coord) {
 /**
  *
  * @param {Point} coord
+ */
+Person.prototype.calculateShotCost = function(coord) {
+	var distance = this._calculateDistance(coord);
+};
+
+/**
+ *
+ * @param {Point} coord
  * @param {Person.HEAD|Person.BODY|Person.LEGS} bodypart
  * @param {Number} accuracy 0.0 - 1.0
  * @param {Number} rounds number of bullets
@@ -441,17 +449,23 @@ Person.prototype.shoot = function(coord, bodypart, accuracy, rounds) {
 Person.prototype.dealDamage = function(weapon, bodypart) {
 	/** @type {Wear} wear */
 	var wear 			= this._wear[bodypart],
-		ammoArmorProp 	= Ammo.PROPERTIES[weapon.ammo.type][0],
-		ammoBodyProp 	= Ammo.PROPERTIES[weapon.ammo.type][1],
+		ammoBodyProp 	= Ammo.PROPERTIES[weapon.ammo.type][0],
+		ammoArmorProp 	= Ammo.PROPERTIES[weapon.ammo.type][1],
 		damage 			= 0,
 		armorLoss 		= weapon.damage * (wear.armor * ammoArmorProp);
 
-	// armor reduces damage
-	damage = weapon.damage - armorLoss;
+	damage = (weapon.damage * ammoBodyProp) - (wear.armor * ammoArmorProp);
 	if(damage < 0) damage = 0;
 
-	// impact of the specific ammo on the body damage
-	damage *= ammoBodyProp;
+	// add random
+	var random = this.MT.random();
+	if(random <= 0.33) {
+		damage -= Math.round(damage * 0.1 * this.MT.random());
+	} else if(random > 0.66) {
+		damage += Math.round(damage * 0.1 * this.MT.random());
+	}
+
+	// TODO: consider bodypart
 
 	// round damage
 	damage = Math.round(damage);
@@ -459,7 +473,8 @@ Person.prototype.dealDamage = function(weapon, bodypart) {
 	this._hp -= damage;
 
 	// armors condition is reduced based on the damage it prevented
-	wear.condition -= (armorLoss / 50);
+	// TODO: consider condition loss
+	//wear.condition -= (armorLoss / 50);
 
 	// calculate bleeding (40% chance)
 	if(!this._bleeding) this._bleeding = damage > 15 && this.MT.random() <= 0.4;

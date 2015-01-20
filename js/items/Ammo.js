@@ -40,10 +40,10 @@ Ammo.TYPE_GLASER 	= 'glaser'; // glaser
 Ammo.TYPE_BALL 		= 'ball';	// standard ball ammo
 
 Ammo.PROPERTIES = {
-	ap		: [ 1.3, 1, 1 ],
-	hp		: [ 0.7, 1.7, 1 ],
-	glaser	: [ 0.3, 3, 1 ],
-	ball	: [ 1, 1, 1 ]
+	ap		: [ 0.9, 	0.5,	1 ],
+	hp		: [ 1.2, 	1.5, 	1 ],
+	glaser	: [ 2, 		3, 		1 ],
+	ball	: [ 1, 		1, 		1 ]
 };
 
 // GETTER / SETTER

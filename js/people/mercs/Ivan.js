@@ -28,7 +28,7 @@ function Ivan(equip) {
 
 		this
 			.equip(helmet, west, shorts, ak74, new $5_45MM(Ammo.TYPE_AP), new $5_45MM(Ammo.TYPE_HP))
-			.putOn(helmet, west, shorts)
+			.putOn(helmet, shorts)
 			.grab(ak74);
 	}
 }

@@ -6,7 +6,7 @@ function Colt_Commando() {
 		caliber: $5_56MM,
 		magazine: 30,
 		range: 28,
-		ap: [ 5, 9 ],
+		ap: [ 5, null, 9 ],
 		weight: 2.6,
 		size: Item.LARGE,
 		hands: 2
