@@ -336,24 +336,17 @@ Person.prototype.walk = function(coord) {
  * @param {Point} coord
  * @param {Person.HEAD|Person.BODY|Person.LEGS} bodypart
  * @param {Number} accuracy 0.0 - 1.0
+ * @param {Number} rounds
  */
-Person.prototype.shoot = function(coord, bodypart, accuracy) {
+Person.prototype.shoot = function(coord, bodypart, accuracy, rounds) {
+	if(rounds == undefined) rounds = 1;
+
 	var distance = this._calculateDistance(coord),
 		target = "("+coord.x+"/"+coord.y+")",
 		me = this.logName;
 
 	// calculate accuracy
 	accuracy = 0.5 + (0.5 * accuracy);
-
-	// get enemy to shoot at
-	/** @type {Person} enemy */
-	var enemy;
-	World.PEOPLE.forEach(
-		/** @param {Person} somePerson */
-		function(somePerson) {
-			if(somePerson.coord.x == coord.x && somePerson.coord.y == coord.y) enemy = somePerson;
-		}
-	);
 
 	// calculate if bullet hits, for every weapon in hand
 	this._hands.forEach(
@@ -364,66 +357,74 @@ Person.prototype.shoot = function(coord, bodypart, accuracy) {
 				this.log(me +"'s "+ weapon.name + "is out of ammo.");
 				return;
 			}
-			// reduce ammo
-			// todo: consider burst mode/auto
-			weapon.ammo.rounds -= 1;
 
-			// reduce weapon condition
-			weapon.condition -= 0.0015;
+			for(var i=0; i < rounds; i++) {
+				if(weapon.ammo.rounds < 1) break;
 
-			// calculate range factor
-			var chance_range = weapon.range / distance.sightDistance;
+				// reduce ammo
+				weapon.ammo.rounds -= 1;
 
-			if(enemy) {
-				// calculate stance factor
-				if(enemy.stance != this._stance) {
-					switch(this._stance) {
-						case Person.STAND:
-							if(enemy.stance == Person.CROUCH) accuracy /= 1.1;	// reduce by 10%
-							if(enemy.stance == Person.PRONE) accuracy /= 1.2;	// reduce by 20%
-							break;
-						case Person.CROUCH:
-							if(enemy.stance == Person.STAND) accuracy *= 1.1;	// improve by 10%
-							if(enemy.stance == Person.PRONE) accuracy /= 1.1;	// reduce by 10%
-							break;
-						case Person.PRONE:
-							if(enemy.stance == Person.STAND) accuracy *= 1.2;	// improve by 20%
-							if(enemy.stance == Person.CROUCH) accuracy *= 1.1;	// improve by 20%
-							break;
-						default:
-					}
-				}
+				// reduce weapon condition
+				weapon.condition -= 0.0015;
 
-				target = enemy.logName;
-			}
+				// calculate range factor
+				var chance_range = weapon.range / distance.sightDistance;
 
-			var chance_of_hit = Math.round(chance_range * accuracy * 100) / 100;
-			var random = this.MT.random();
+				// get enemy to shoot at
+				/** @type {Person|null} enemy */
+				var enemy = World.getPerson(coord);
 
-			// consider marksmanship
-			chance_of_hit *= (this._stats.mrk / 100);
-
-			// max 95% change of hit
-			if(chance_of_hit > 0.95) chance_of_hit = 0.95;
-
-			this.log(me +" tries to shoot "+ target +" with "+ chance_of_hit +" chance of hitting.");
-
-			if(random <= chance_of_hit) {
 				if(enemy) {
-					var dmg = enemy.dealDamage(weapon, bodypart);
-
-					var msg = me + " deals "+ dmg +" damage on "+ target +".";
-					if(enemy.bleeding) msg += " "+ target + " is bleeding.";
-
-					// check death
-					if(enemy.hp <= 0) {
-						msg += "<br/>"+ enemy.logName +" dies.";
+					// calculate stance factor
+					if(enemy.stance != this._stance) {
+						switch(this._stance) {
+							case Person.STAND:
+								if(enemy.stance == Person.CROUCH) accuracy /= 1.1;	// reduce by 10%
+								if(enemy.stance == Person.PRONE) accuracy /= 1.2;	// reduce by 20%
+								break;
+							case Person.CROUCH:
+								if(enemy.stance == Person.STAND) accuracy *= 1.1;	// improve by 10%
+								if(enemy.stance == Person.PRONE) accuracy /= 1.1;	// reduce by 10%
+								break;
+							case Person.PRONE:
+								if(enemy.stance == Person.STAND) accuracy *= 1.2;	// improve by 20%
+								if(enemy.stance == Person.CROUCH) accuracy *= 1.1;	// improve by 20%
+								break;
+							default:
+						}
 					}
 
-					this.log(msg);
+					target = enemy.logName;
+
+					var chance_of_hit = Math.round(chance_range * accuracy * 100) / 100;
+					var random = this.MT.random();
+
+					// consider marksmanship
+					chance_of_hit *= (this._stats.mrk / 100);
+
+					// max 95% change of hit
+					if(chance_of_hit > 0.95) chance_of_hit = 0.95;
+
+					this.log(me +" tries to shoot "+ target +" with "+ chance_of_hit +" chance of hitting.");
+
+					if(random <= chance_of_hit) {
+						if(enemy) {
+							var dmg = enemy.dealDamage(weapon, bodypart);
+
+							var msg = me + " deals "+ dmg +" damage on "+ target +".";
+							if(enemy.bleeding) msg += " "+ target + " is bleeding.";
+
+							// check death
+							if(enemy.isDead) {
+								msg += "<br/>"+ enemy.logName +" dies.";
+							}
+
+							this.log(msg);
+						}
+					} else {
+						this.log(me, "misses.");
+					}
 				}
-			} else {
-				this.log(me, "misses.");
 			}
 		}.bind(this)
 	);
@@ -701,5 +702,11 @@ Object.defineProperty(Person.prototype, "bleeding", {
 Object.defineProperty(Person.prototype, "logName", {
 	get: function () {
 		return "<a href=\"#/person/"+ this._nickname +"\">"+ this._nickname +"</a>";
+	}
+});
+
+Object.defineProperty(Person.prototype, "isDead", {
+	get: function () {
+		return this._hp <= 0;
 	}
 });
