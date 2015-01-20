@@ -19,16 +19,23 @@ World = {
 
 	/**
 	 *
-	 * @param {Point} coord
+	 * @param {Point|String} coordOrNickname coord or nickname
 	 * @return {Person|null}
 	 */
-	getPerson: function(coord) {
+	getPerson: function(coordOrNickname) {
 		var person;
 		for(var i=0; i < this.PEOPLE.length; i++) {
 			person = this.PEOPLE[i];
-			if(person.coord.x == coord.x && person.coord.y == coord.y && !person.isDead)
-				return person;
+			if(person.isDead) break;
+
+			if(coordOrNickname instanceof Point) {
+				if(person.coord.x == coordOrNickname.x && person.coord.y == coordOrNickname.y)
+					return person;
+			} else {
+				if(person.nickname.toLowerCase() == coordOrNickname.toLowerCase()) return person;
+			}
 		}
+
 		return null;
 	}
 };
