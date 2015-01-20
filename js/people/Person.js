@@ -457,6 +457,9 @@ Person.prototype.dealDamage = function(weapon, bodypart) {
 	damage = (weapon.damage * ammoBodyProp) - (wear.armor * ammoArmorProp);
 	if(damage < 0) damage = 0;
 
+	// consider bodyparts
+	if(bodypart == Person.HEAD) damage *= 1.5;
+
 	// add random
 	var random = this.MT.random();
 	if(random <= 0.33) {
@@ -465,16 +468,13 @@ Person.prototype.dealDamage = function(weapon, bodypart) {
 		damage += Math.round(damage * 0.1 * this.MT.random());
 	}
 
-	// TODO: consider bodypart
-
 	// round damage
 	damage = Math.round(damage);
 
 	this._hp -= damage;
 
-	// armors condition is reduced based on the damage it prevented
-	// TODO: consider condition loss
-	//wear.condition -= (armorLoss / 50);
+	// armors condition is reduced
+	wear.condition -= 0.0015;
 
 	// calculate bleeding (40% chance)
 	if(!this._bleeding) this._bleeding = damage > 15 && this.MT.random() <= 0.4;
