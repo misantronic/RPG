@@ -1,4 +1,27 @@
 World = {
+	tileWidth		: 40,
+	canvasCoord		: HTMLCanvasElement,
+	canvasPeople	: HTMLCanvasElement,
+	canvasWidth		: 0,
+	canvasHeight	: 0,
+	ctxCoord		: CanvasRenderingContext2D,
+	ctxPeople		: CanvasRenderingContext2D,
+
+	_drawCoord		: true,
+
+	init: function() {
+		this.canvasCoord = document.getElementById('world-coord');
+		this.ctxCoord = this.canvasCoord.getContext('2d');
+
+		this.canvasPeople = document.getElementById('world-people');
+		this.ctxPeople = this.canvasPeople.getContext('2d');
+
+		this.canvasWidth = this.canvasCoord.width;
+		this.canvasHeight = this.canvasCoord.height;
+
+		this.draw();
+	},
+
 	addPeople: function() {
 		for (var person in arguments) {
 			if(arguments.hasOwnProperty(person)) {
@@ -37,6 +60,49 @@ World = {
 		}
 
 		return null;
+	},
+
+	draw: function() {
+		this.ctxPeople.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+
+		// draw coordinates
+		var maxX = this.canvasWidth / this.tileWidth;
+		var maxY = this.canvasHeight / this.tileWidth;
+
+		for(var y = 0; y < maxY; y++) {
+			for(var x = 0; x < maxX; x++) {
+				this._drawTile(new Point(x+1, y+1));
+			}
+		}
+
+		this._drawCoord = false;
+	},
+
+	/**
+	 *
+	 * @param {Point} coord
+	 * @private
+	 */
+	_drawTile: function(coord) {
+		var xi = coord.x - 1, yi = coord.y - 1,
+			x = xi * this.tileWidth, y = yi * this.tileWidth;
+
+		// draw coordinate
+		if(this._drawCoord) {
+			this.ctxCoord.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+			this.ctxCoord.strokeStyle = "#EEE";
+			this.ctxCoord.rect(x, y, this.tileWidth, this.tileWidth);
+			this.ctxCoord.stroke();
+		}
+
+
+		// look for people
+		var person = this.getPerson(coord);
+		if(person) {
+			this.ctxPeople.font = "10px sans-serif";
+			var text = this.ctxPeople.measureText(person.nickname);
+			this.ctxPeople.fillText(person.nickname, x + ((this.tileWidth / 2) - (text.width / 2)), y + (this.tileWidth / 2) + 2, this.tileWidth);
+		}
 	}
 };
 
