@@ -101,6 +101,7 @@ World = {
 		this.ctxSight.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 		if(this._drawSight) {
 			this.ctxSight.fillStyle = "#00CC00";
+			this.ctxSight.fillOpacity = .2;
 
 			var sight = this._drawSight.calculateSight();
 			sight.forEach(
