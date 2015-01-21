@@ -1,13 +1,30 @@
 a { color: blue; }
 
 #log {
+    display: block;
+    float: left;
     font-family: 'Source Code Pro', monospace;
     font-size: 12px;
-    display: block;
-    width: 650px;
-    height: 300px;
+    width: 500px;
+    height: 485px;
     padding: 5px;
     border: 3px outset #333;
     overflow: auto;
     line-height: 140%;
+    margin-right: 10px;
+    box-sizing: border-box;
+}
+
+#world {
+    float: left;
+    width: 640px;
+    height: 480px;
+    border: 3px outset #333;
+    position: relative;
+}
+
+#world > canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
 }

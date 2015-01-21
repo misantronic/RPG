@@ -57,7 +57,7 @@ Person.prototype._nickname = '';
  * @type {Point}
  * @private
  */
-Person.prototype._coord = new Point();
+Person.prototype._coord = new Point(1, 1);
 
 /**
  *
@@ -237,33 +237,29 @@ Person.prototype.startTurn = function() {
 
 	this._ap = ap;
 
+	World.draw();
+
 	return this;
 };
 
 Person.prototype.endTurn = function() {
-
-
 	return this;
 };
 
 /**
  *
  * @param {Point} coord
- * @return {{walkingDistance: Array, sightDistance: number, cost: number}}
+ * @return {{walkingDistance: Array, sightDistance: number, costTotal: number, costPerTile: number}}
  * @private
  */
 Person.prototype._calculateDistance = function(coord) {
-	// calculate walking distance
 	// TODO: consider world map resp. obsticales
-	var dist = Math.abs(this._coord.x - coord.x) + Math.abs(this._coord.y - coord.y);
 
-	// calculate ap-cost
+	// calculate per-tile cost
 	var tileCost = 0;
 	if(this._stance == Person.STAND) 		tileCost = 8;
 	else if(this._stance == Person.CROUCH) 	tileCost = 12;
 	else if(this._stance == Person.PRONE) 	tileCost = 16;
-
-	var cost = tileCost * dist;
 
 	// caluclate direct walking distance
 	var distX = [], distY = [];
@@ -279,12 +275,14 @@ Person.prototype._calculateDistance = function(coord) {
 	// find out which is longest and shortest distance
 	var lgDist = distX.length > distY.length ? distX : distY,
 		shDist = distX.length > distY.length ? distY : distX,
-		div = Math.ceil(lgDist.length / shDist.length),
+		div = Math.floor(lgDist.length / shDist.length),
 		index = 0,
 		walkingDist = [];
 
 	lgDist.forEach(function(p1, i) {
 		if(i != 0 && i % div == 0) index++;
+
+		if(shDist[index] == undefined) index--;
 
 		if(lgDist.type == 'x') 		walkingDist.push( new Point(p1, shDist[index]) );
 		else if(lgDist.type == 'y') walkingDist.push( new Point(shDist[index], p1) );
@@ -295,6 +293,9 @@ Person.prototype._calculateDistance = function(coord) {
 	if(lastPoint.x != coord.x || lastPoint.y != coord.y) {
 		walkingDist.push(coord);
 	}
+	walkingDist.shift();
+
+	var costTotal = tileCost * walkingDist.length;
 
 	// calculate sight distance (c² = a² + b²)
 	var sightDist = Math.sqrt(Math.pow(coord.x - this._coord.x, 2) + Math.pow(coord.y - this._coord.y, 2));
@@ -303,30 +304,60 @@ Person.prototype._calculateDistance = function(coord) {
 	return {
 		walkingDistance: walkingDist,
 		sightDistance: sightDist,
-		cost: cost
+		costTotal: costTotal,
+		costPerTile: tileCost
 	};
 };
 
 /**
- * @param {Point} coord
+ *
+ * @return {Array}
  */
-Person.prototype.walk = function(coord) {
+Person.prototype.calculateSight = function() {
+	var direction = 'S';
+
+	var sight = [];
+	if(direction == 'S') {
+		sight = [
+			new Point(this._coord.x - 1, this._coord.y), new Point(this._coord.x + 1, this._coord.y ),
+			new Point(this._coord.x - 1, this._coord.y + 1), new Point(this._coord.x, this._coord.y + 1), new Point(this._coord.x + 1, this._coord.y + 1),
+			new Point(this._coord.x - 1, this._coord.y + 2), new Point(this._coord.x, this._coord.y + 2), new Point(this._coord.x + 1, this._coord.y + 2)
+		]
+	}
+
+	return sight;
+};
+
+/**
+ * @param {Point} coord
+ * @param {Function} [callback]
+ */
+Person.prototype.walk = function(coord, callback) {
 	var distance = this._calculateDistance(coord);
-	var cost = distance.cost;
 
 	this.log(this.logName +" walks from ("+ this._coord.x +"/"+ this._coord.y +") to ("+ coord.x +"/"+ coord.y +")");
 
-	console.log("- cost", cost);
-	console.log("- walking distance", distance.walkingDistance);
-	console.log("- sight distance", distance.sightDistance);
+	console.log("distance", distance);
 
-	if(this._ap - cost < 0) {
-		return this;
+	// animate walking
+	var i = 0;
+	var intervalId = setInterval(function() {
+		if(this._ap - distance.costPerTile < 0) {
+			onWalkingEnd.call(this);
+			return false;
+		}
+
+		this._ap -= distance.costPerTile;
+		this._coord = distance.walkingDistance[i];
+		World.draw();
+
+		if(++i >= distance.walkingDistance.length) onWalkingEnd.call(this);
+	}.bind(this), 250);
+
+	function onWalkingEnd() {
+		clearInterval(intervalId);
+		if(callback) callback.call();
 	}
-
-	this._coord = coord;
-
-	this._ap -= cost;
 
 	return this;
 };

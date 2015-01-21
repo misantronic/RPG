@@ -1,4 +1,50 @@
 World = {
+	tileWidth		: 40,
+	canvasCoord		: HTMLCanvasElement,
+	canvasPeople	: HTMLCanvasElement,
+	canvasSight		: HTMLCanvasElement,
+	canvasWidth		: 0,
+	canvasHeight	: 0,
+	ctxCoord		: CanvasRenderingContext2D,
+	ctxPeople		: CanvasRenderingContext2D,
+	ctxSight		: CanvasRenderingContext2D,
+
+	_drawCoord		: true,
+	/** @type {Person} _drawSight */
+	_drawSight		: null,
+
+	init: function() {
+		this.canvasCoord 	= document.getElementById('world-coord');
+		this.ctxCoord 		= this.canvasCoord.getContext('2d');
+
+		this.canvasPeople 	= document.getElementById('world-people');
+		this.ctxPeople 		= this.canvasPeople.getContext('2d');
+
+		this.canvasSight 	= document.getElementById('world-sight');
+		this.ctxSight 		= this.canvasSight.getContext('2d');
+
+		this.canvasWidth 	= this.canvasCoord.width;
+		this.canvasHeight 	= this.canvasCoord.height;
+
+		window.addEventListener("keydown", function(e) {
+			if(e.keyCode == 83) {
+				// show sight
+				this._drawSight = ivan;
+				this.draw();
+			}
+		}.bind(this));
+
+		window.addEventListener("keyup", function(e) {
+			if(e.keyCode == 83) {
+				// hide sight
+				this._drawSight = null;
+				this.draw();
+			}
+		}.bind(this));
+
+		this.draw();
+	},
+
 	addPeople: function() {
 		for (var person in arguments) {
 			if(arguments.hasOwnProperty(person)) {
@@ -37,6 +83,70 @@ World = {
 		}
 
 		return null;
+	},
+
+	draw: function() {
+		this.ctxPeople.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+
+		// draw coordinates
+		var maxX = this.canvasWidth / this.tileWidth;
+		var maxY = this.canvasHeight / this.tileWidth;
+
+		for(var y = 0; y < maxY; y++) {
+			for(var x = 0; x < maxX; x++) {
+				this._drawTile(new Point(x+1, y+1));
+			}
+		}
+
+		this.ctxSight.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+		if(this._drawSight) {
+			this.ctxSight.fillStyle = "#00CC00";
+			this.ctxSight.fillOpacity = .2;
+
+			var sight = this._drawSight.calculateSight();
+			sight.forEach(
+				/** @param {Point} p */
+				function(p) {
+					var x = (p.x - 1) * this.tileWidth;
+					var y = (p.y - 1) * this.tileWidth;
+					this.ctxSight.rect(x, y, this.tileWidth, this.tileWidth);
+					this.ctxSight.fill();
+				}.bind(this)
+			);
+		}
+
+		this._drawCoord = false;
+	},
+
+	/**
+	 *
+	 * @param {Point} coord
+	 * @private
+	 */
+	_drawTile: function(coord) {
+		var xi = coord.x - 1, yi = coord.y - 1,
+			x = xi * this.tileWidth, y = yi * this.tileWidth;
+
+		// draw coordinate
+		if(this._drawCoord) {
+			this.ctxCoord.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+			this.ctxCoord.strokeStyle = "#EEE";
+			this.ctxCoord.rect(x, y, this.tileWidth, this.tileWidth);
+			this.ctxCoord.stroke();
+		}
+
+		// look for people
+		var person = this.getPerson(coord);
+		if(person) {
+			this.ctxPeople.font = "11px sans-serif";
+			var text = this.ctxPeople.measureText(person.nickname);
+			this.ctxPeople.fillText(person.nickname, x + ((this.tileWidth / 2) - (text.width / 2)), y + (this.tileWidth / 2) - 4, this.tileWidth);
+			if(person.AP != Infinity) {
+				this.ctxPeople.font = "9px sans-serif";
+				text = this.ctxPeople.measureText("("+person.AP+")");
+				this.ctxPeople.fillText("("+person.AP+")", x + ((this.tileWidth / 2) - (text.width / 2)), y + (this.tileWidth / 2) + 6, this.tileWidth);
+			}
+		}
 	}
 };
 

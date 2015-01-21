@@ -4,7 +4,6 @@ function Game() {
 
 			'js/Point.js',
 			'js/Abstract.js',
-			'js/world/World.js',
 
 			// items
 			'js/items/Item.js',
@@ -32,7 +31,9 @@ function Game() {
 			'js/items/weapons/pistol/Beretta_92F.js',
 			'js/items/weapons/assault_rifle/Colt_Commando.js',
 			'js/items/weapons/smg/MP5K.js',
-			'js/items/weapons/assault_rifle/AK-74.js'
+			'js/items/weapons/assault_rifle/AK-74.js',
+
+			'js/world/World.js'
 		]
 	).done(this._init.bind(this));
 
@@ -47,13 +48,12 @@ Game.prototype._init = function() {
 	World.addPeople(shadow, ivan);
 	World.joinTeam('A', shadow);
 	World.joinTeam('B', ivan);
+	World.init();
 
-	console.log(World.PEOPLE);
-
-	ivan.walk(new Point(20, 20));
-
-	//document.body.appendChild(shadow.thumb);
-	//document.body.appendChild(ivan.thumb);
+	ivan.walk(new Point(5, 5), function() {
+		shadow.startTurn();
+		ivan.startTurn();
+	});
 };
 
 Game.prototype._onHashChange = function(e) {
