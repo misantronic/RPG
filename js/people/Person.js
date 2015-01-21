@@ -443,19 +443,19 @@ Person.prototype.shoot = function(coord, bodypart, accuracy, rounds) {
 /**
  *
  * @param {Weapon} weapon
- * @param {Person.HEAD|Person.BODY|Person.LEGS} bodypart
+ * @param {Person.HEAD|Person.BODY|Person.LEGS} [bodypart]
  * @returns {number} damage
  */
 Person.prototype.dealDamage = function(weapon, bodypart) {
+	if(!bodypart) bodypart = Person.BODY;
+
 	/** @type {Wear} wear */
 	var wear 			= this._wear[bodypart],
 		ammoBodyProp 	= Ammo.PROPERTIES[weapon.ammo.type][0],
-		ammoArmorProp 	= Ammo.PROPERTIES[weapon.ammo.type][1],
-		damage 			= 0,
-		armorLoss 		= weapon.damage * (wear.armor * ammoArmorProp);
+		ammoArmorProp 	= Ammo.PROPERTIES[weapon.ammo.type][1];
 
 	// calculate damage
-	damage = (weapon.damage * ammoBodyProp) - (wear.armor * ammoArmorProp);
+	var damage = (weapon.damage * ammoBodyProp) - (wear.armor * ammoArmorProp);
 	if(damage < 0) damage = 0;
 
 	// consider bodyparts
