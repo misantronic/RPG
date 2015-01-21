@@ -57,7 +57,7 @@ Person.prototype._nickname = '';
  * @type {Point}
  * @private
  */
-Person.prototype._coord = new Point();
+Person.prototype._coord = new Point(1, 1);
 
 /**
  *
@@ -324,9 +324,16 @@ Person.prototype.walk = function(coord) {
 		return this;
 	}
 
-	this._coord = coord;
-
 	this._ap -= cost;
+
+	// animate walking
+	var i = 0;
+	var intervalId = setInterval(function() {
+		this._coord = distance.walkingDistance[i];
+		World.draw();
+
+		if(++i >= distance.walkingDistance.length) clearInterval(intervalId);
+	}.bind(this), 250);
 
 	return this;
 };
