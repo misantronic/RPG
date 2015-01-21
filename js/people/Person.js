@@ -310,6 +310,25 @@ Person.prototype._calculateDistance = function(coord) {
 };
 
 /**
+ *
+ * @return {Array}
+ */
+Person.prototype.calculateSight = function() {
+	var direction = 'S';
+
+	var sight = [];
+	if(direction == 'S') {
+		sight = [
+			new Point(this._coord.x - 1, this._coord.y), new Point(this._coord.x + 1, this._coord.y ),
+			new Point(this._coord.x - 1, this._coord.y + 1), new Point(this._coord.x, this._coord.y + 1), new Point(this._coord.x + 1, this._coord.y + 1),
+			new Point(this._coord.x - 1, this._coord.y + 2), new Point(this._coord.x, this._coord.y + 2), new Point(this._coord.x + 1, this._coord.y + 2)
+		]
+	}
+
+	return sight;
+};
+
+/**
  * @param {Point} coord
  * @param {Function} [callback]
  */

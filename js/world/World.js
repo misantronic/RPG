@@ -21,15 +21,15 @@ World = {
 		this.ctxPeople 		= this.canvasPeople.getContext('2d');
 
 		this.canvasSight 	= document.getElementById('world-sight');
-		this.ctxSight 		= this.canvasPeople.getContext('2d');
+		this.ctxSight 		= this.canvasSight.getContext('2d');
 
 		this.canvasWidth 	= this.canvasCoord.width;
 		this.canvasHeight 	= this.canvasCoord.height;
 
 		window.addEventListener("keydown", function(e) {
-			if(e.keyCode == 83 && ! this._drawSight) {
+			if(e.keyCode == 83) {
 				// show sight
-				this._drawSight = shadow;
+				this._drawSight = ivan;
 				this.draw();
 			}
 		}.bind(this));
@@ -98,8 +98,20 @@ World = {
 			}
 		}
 
+		this.ctxSight.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 		if(this._drawSight) {
-			console.log(this._drawSight);
+			this.ctxSight.fillStyle = "#00CC00";
+
+			var sight = this._drawSight.calculateSight();
+			sight.forEach(
+				/** @param {Point} p */
+				function(p) {
+					var x = (p.x - 1) * this.tileWidth;
+					var y = (p.y - 1) * this.tileWidth;
+					this.ctxSight.rect(x, y, this.tileWidth, this.tileWidth);
+					this.ctxSight.fill();
+				}.bind(this)
+			);
 		}
 
 		this._drawCoord = false;
