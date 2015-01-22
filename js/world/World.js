@@ -1,5 +1,6 @@
 World = {
 	tileWidth		: 40,
+
 	canvasCoord		: HTMLCanvasElement,
 	canvasPeople	: HTMLCanvasElement,
 	canvasSight		: HTMLCanvasElement,
@@ -8,6 +9,7 @@ World = {
 	ctxCoord		: CanvasRenderingContext2D,
 	ctxPeople		: CanvasRenderingContext2D,
 	ctxSight		: CanvasRenderingContext2D,
+	selectedMerc	: Merc,
 
 	_drawCoord		: true,
 	/** @type {Person} _drawSight */
@@ -26,10 +28,11 @@ World = {
 		this.canvasWidth 	= this.canvasCoord.width;
 		this.canvasHeight 	= this.canvasCoord.height;
 
+		// keyboard
 		window.addEventListener("keydown", function(e) {
 			if(e.keyCode == 83 && ! this._drawSight) {
 				// show sight
-				this._drawSight = ivan;
+				this._drawSight = this.selectedMerc;
 				this.draw();
 			}
 		}.bind(this));
@@ -41,6 +44,15 @@ World = {
 				this.draw();
 			}
 		}.bind(this));
+
+		// obstacles
+		var ob1 = new Obstacle(new Point(7, 7), 0.33);
+		var ob2 = new Obstacle(new Point(7, 6), 0.66);
+		var ob3 = new Obstacle(new Point(2, 3), 0.66);
+
+		World.OBSTACLES.push(ob1);
+		World.OBSTACLES.push(ob2);
+		World.OBSTACLES.push(ob3);
 
 		this.draw();
 	},
@@ -85,6 +97,22 @@ World = {
 		return null;
 	},
 
+	/**
+	 *
+	 * @param {Point} coord
+	 * @return {Obstacle|null}
+	 */
+	getObstacle: function(coord) {
+		var obstacle;
+		for(var i=0; i < this.OBSTACLES.length; i++) {
+			obstacle = this.OBSTACLES[i];
+			if(obstacle.x == coord.x && obstacle.y == coord.y)
+				return obstacle;
+		}
+
+		return null;
+	},
+
 	draw: function() {
 		this.ctxPeople.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 		this.ctxSight.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
@@ -100,23 +128,48 @@ World = {
 		}
 
 		if(this._drawSight) {
-			this.ctxSight.fillStyle = "#00CC00";
+
 			this.ctxSight.fillOpacity = .2;
 
-			var sight = this._drawSight.calculateSight();
-			sight.forEach(
+			var sight = this._drawSight.calculateSight(), p, p2;
+			for(var i=0; i < sight.length; i++) {
 				/** @param {Point} p */
-				function(p) {
-					var x = (p.x - 1) * this.tileWidth;
-					var y = (p.y - 1) * this.tileWidth;
+				p = sight[i];
+				x = (p.x - 1) * this.tileWidth;
+				y = (p.y - 1) * this.tileWidth;
 
-					this.ctxSight.fillRect(x, y, this.tileWidth, this.tileWidth);
-				}.bind(this)
-			);
-			this.ctxSight.fill();
+				if(p.obstacle) {
+					if (this._drawSight.direction == Person.SOUTHEAST) {
+						p2 = this._getPoint(sight, new Point(p.x+1,p.y+1));
+						if(p2) p2.color = '#CC0000';
+					} else if(this._drawSight.direction == Person.EAST) {
+						p2 = this._getPoint(sight, new Point(p.x+1,p.y));
+						if(p2) p2.color = '#CC0000';
+					}
+				}
+
+				this.ctxSight.fillStyle = p.color;
+
+				this.ctxSight.fillRect(x, y, this.tileWidth, this.tileWidth);
+				this.ctxSight.fill();
+			}
 		}
 
 		this._drawCoord = false;
+	},
+
+	/**
+	 *
+	 * @param {Array} list
+	 * @param {Point} point
+	 * @returns {Point|null}
+	 * @private
+	 */
+	_getPoint: function(list, point) {
+		for(var i=0; i < list.length; i++) {
+			if(list[i].x == point.x && list[i].y == point.y) return list[i];
+		}
+		return null;
 	},
 
 	/**
@@ -158,6 +211,7 @@ World.MORNING 	= 'morning';
 
 World.daytime = World.DAY;
 
+World.OBSTACLES = [];
 World.PEOPLE = [];
 World.TEAMS = {
 	A: [],

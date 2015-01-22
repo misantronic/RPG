@@ -157,7 +157,7 @@ Person.NORTHWEST 	= 'north-west';
  * @type {Person.NORTH|Person.NORTHEAST|Person.EAST|Person.SOUTHEAST|Person.SOUTH|Person.SOUTHWEST|Person.WEST|Person.NORTHWEST}
  * @private
  */
-Person.prototype._direction = Person.WEST;
+Person.prototype._direction = Person.EAST;
 
 Person.prototype._sightRange = 5;
 
@@ -333,18 +333,18 @@ Person.prototype._calculateDistance = function(coord) {
  * @return {Array}
  */
 Person.prototype.calculateSight = function() {
-	var sight = [], map = [], x, y;
+	var sight = [], map = [], x, y, p;
+	var sightRange = this.sightRange;
 
 	if(this._direction == Person.NORTH || this._direction == Person.EAST || this._direction == Person.SOUTH || this._direction == Person.WEST) {
-		for(y=1; y <= this.sightRange; y++) {
+		for(y=0; y < this.sightRange; y++) {
 			for(x=0; x < y+y+1; x++) {
 				map.push( new Point(y-x, y) );
 			}
 		}
 	} else {
-		for(x=0; x <= this.sightRange; x++) {
-			for(y = this.sightRange - x; y >= 0; y--) {
-				if(x == 0 && y == 0) continue;
+		for(y=0; y < this.sightRange; y++) {
+			for(x=0; x < this.sightRange; x++) {
 				map.push( new Point(x, y) );
 			}
 		}
@@ -376,7 +376,12 @@ Person.prototype.calculateSight = function() {
 				break;
 		}
 
-		sight.push( new Point( this._coord.x + x, this._coord.y + y ) );
+		p = new Point(this._coord.x + x, this._coord.y + y);
+
+		var obstacle = World.getObstacle(p);
+		if(obstacle) p.obstacle = obstacle;
+
+		sight.push(p);
 	}
 
 	return sight;
@@ -847,7 +852,7 @@ Object.defineProperty(Person.prototype, "direction", {
 	 */
 	set: function (val) {
 		if(val instanceof Point) {
-			var diagonal = this._coord.x - this._coord.y == 0 && val.x - val.y == 0;
+			var diagonal = this._coord.x - val.x == this._coord.y - val.y;
 
 			if(diagonal) {
 				if(val.x > this._coord.x && val.y < this._coord.y) {
@@ -859,7 +864,7 @@ Object.defineProperty(Person.prototype, "direction", {
 				} else if(val.x < this._coord.x && val.y > this._coord.y) {
 					// south-west
 					this._direction = Person.SOUTHWEST;
-				} else if(val.x < this._coord.x && val.y > this._coord.y) {
+				} else if(val.x < this._coord.x && val.y < this._coord.y) {
 					// north-west
 					this._direction = Person.NORTHWEST;
 				}
@@ -881,5 +886,9 @@ Object.defineProperty(Person.prototype, "direction", {
 		} else {
 			this._direction = val;
 		}
+	},
+
+	get: function() {
+		return this._direction;
 	}
 });

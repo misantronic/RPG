@@ -4,6 +4,7 @@ function Game() {
 
 			'js/Point.js',
 			'js/Abstract.js',
+			'js/world/Obstacle.js',
 
 			// items
 			'js/items/Item.js',
@@ -49,10 +50,10 @@ Game.prototype._init = function() {
 	World.joinTeam('A', shadow);
 	World.joinTeam('B', ivan);
 	World.init();
+	World.selectedMerc = ivan;
 
 	ivan.walk(new Point(5, 5), function() {
-		shadow.startTurn();
-		ivan.startTurn();
+
 	});
 };
 
