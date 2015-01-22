@@ -151,6 +151,13 @@ World = {
 	}
 };
 
+World.NIGHT 	= 'night';
+World.EVENING 	= 'evening';
+World.DAY		= 'day';
+World.MORNING 	= 'morning';
+
+World.daytime = World.DAY;
+
 World.PEOPLE = [];
 World.TEAMS = {
 	A: [],

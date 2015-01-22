@@ -159,6 +159,8 @@ Person.NORTHWEST 	= 'north-west';
  */
 Person.prototype._direction = Person.WEST;
 
+Person.prototype._sightRange = 5;
+
 /**
  * @param {...Array} arguments items
  * @returns {Person}
@@ -331,27 +333,26 @@ Person.prototype._calculateDistance = function(coord) {
  * @return {Array}
  */
 Person.prototype.calculateSight = function() {
-	var sight = [], map = [];
+	var sight = [], map = [], x, y;
 
 	if(this._direction == Person.NORTH || this._direction == Person.EAST || this._direction == Person.SOUTH || this._direction == Person.WEST) {
-		map = [
-			new Point(0, 1),
-			new Point(1, 2), new Point(0, 2), new Point(-1, 2),
-			new Point(2, 3), new Point(1, 3), new Point(0, 3), new Point(-1, 3), new Point(-2, 3),
-			new Point(3, 4), new Point(2, 4), new Point(1, 4), new Point(0, 4), new Point(-1, 4), new Point(-2, 4), new Point(-3, 4)
-		];
+		for(y=1; y <= this.sightRange; y++) {
+			for(x=0; x < y+y+1; x++) {
+				map.push( new Point(y-x, y) );
+			}
+		}
 	} else {
-		map = [
-			new Point(0, 1), new Point(1, 0),
-			new Point(0, 2), new Point(2, 0), new Point(1, 1),
-			new Point(0, 3), new Point(3, 0), new Point(2, 1), new Point(1, 2),
-			new Point(0, 4), new Point(4, 0), new Point(3, 1), new Point(1, 2), new Point(1, 2), new Point(1, 3), new Point(2, 2)
-		]
+		for(x=0; x <= this.sightRange; x++) {
+			for(y = this.sightRange - x; y >= 0; y--) {
+				if(x == 0 && y == 0) continue;
+				map.push( new Point(x, y) );
+			}
+		}
 	}
 
 	for(var i=0; i < map.length; i++) {
-		var x = map[i].x;
-		var y = map[i].y;
+		x = map[i].x;
+		y = map[i].y;
 
 		switch(this._direction) {
 			case Person.NORTH:
@@ -816,6 +817,27 @@ Object.defineProperty(Person.prototype, "logName", {
 Object.defineProperty(Person.prototype, "isDead", {
 	get: function () {
 		return this._hp <= 0;
+	}
+});
+
+Object.defineProperty(Person.prototype, "sightRange", {
+	get: function () {
+		// calculate sight reduction based on the worlds daytime
+		var reduce = 1;
+		if(World && World.daytime) {
+			switch(World.daytime) {
+				case World.NIGHT:
+					reduce = 0.5;
+					break;
+				case World.EVENING:
+					reduce = 0.75;
+					break;
+				default:
+					reduce = 1;
+			}
+		}
+
+		return Math.round(this._sightRange * reduce);
 	}
 });
 
