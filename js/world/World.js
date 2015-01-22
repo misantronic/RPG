@@ -27,7 +27,7 @@ World = {
 		this.canvasHeight 	= this.canvasCoord.height;
 
 		window.addEventListener("keydown", function(e) {
-			if(e.keyCode == 83) {
+			if(e.keyCode == 83 && ! this._drawSight) {
 				// show sight
 				this._drawSight = ivan;
 				this.draw();
@@ -87,6 +87,7 @@ World = {
 
 	draw: function() {
 		this.ctxPeople.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+		this.ctxSight.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
 		// draw coordinates
 		var maxX = this.canvasWidth / this.tileWidth;
@@ -98,7 +99,6 @@ World = {
 			}
 		}
 
-		this.ctxSight.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 		if(this._drawSight) {
 			this.ctxSight.fillStyle = "#00CC00";
 			this.ctxSight.fillOpacity = .2;
@@ -109,10 +109,11 @@ World = {
 				function(p) {
 					var x = (p.x - 1) * this.tileWidth;
 					var y = (p.y - 1) * this.tileWidth;
-					this.ctxSight.rect(x, y, this.tileWidth, this.tileWidth);
-					this.ctxSight.fill();
+
+					this.ctxSight.fillRect(x, y, this.tileWidth, this.tileWidth);
 				}.bind(this)
 			);
+			this.ctxSight.fill();
 		}
 
 		this._drawCoord = false;

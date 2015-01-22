@@ -142,6 +142,23 @@ Person.prototype._energy = 0;
  */
 Person.prototype._bleeding = false;
 
+// directions
+Person.NORTH 		= 'north';
+Person.NORTHEAST 	= 'north-east';
+Person.EAST  		= 'east';
+Person.SOUTHEAST 	= 'south-east';
+Person.SOUTH  		= 'south';
+Person.SOUTHWEST 	= 'south-west';
+Person.WEST  		= 'west';
+Person.NORTHWEST 	= 'north-west';
+
+/**
+ *
+ * @type {Person.NORTH|Person.NORTHEAST|Person.EAST|Person.SOUTHEAST|Person.SOUTH|Person.SOUTHWEST|Person.WEST|Person.NORTHWEST}
+ * @private
+ */
+Person.prototype._direction = Person.WEST;
+
 /**
  * @param {...Array} arguments items
  * @returns {Person}
@@ -314,15 +331,49 @@ Person.prototype._calculateDistance = function(coord) {
  * @return {Array}
  */
 Person.prototype.calculateSight = function() {
-	var direction = 'S';
+	var sight = [], map = [];
 
-	var sight = [];
-	if(direction == 'S') {
-		sight = [
-			new Point(this._coord.x - 1, this._coord.y), new Point(this._coord.x + 1, this._coord.y ),
-			new Point(this._coord.x - 1, this._coord.y + 1), new Point(this._coord.x, this._coord.y + 1), new Point(this._coord.x + 1, this._coord.y + 1),
-			new Point(this._coord.x - 1, this._coord.y + 2), new Point(this._coord.x, this._coord.y + 2), new Point(this._coord.x + 1, this._coord.y + 2)
+	if(this._direction == Person.NORTH || this._direction == Person.EAST || this._direction == Person.SOUTH || this._direction == Person.WEST) {
+		map = [
+			new Point(0, 1),
+			new Point(1, 2), new Point(0, 2), new Point(-1, 2),
+			new Point(2, 3), new Point(1, 3), new Point(0, 3), new Point(-1, 3), new Point(-2, 3)
+		];
+	} else {
+		map = [
+			new Point(0, 1), new Point(1, 0),
+			new Point(0, 2), new Point(2, 0), new Point(1, 1),
+			new Point(0, 3), new Point(3, 0), new Point(2, 1), new Point(1, 2)
 		]
+	}
+
+	for(var i=0; i < map.length; i++) {
+		var x = map[i].x;
+		var y = map[i].y;
+
+		switch(this._direction) {
+			case Person.NORTH:
+				x = 1;
+				y *= -1;
+				break;
+			case Person.EAST:
+				x = map[i].y;
+				y = map[i].x;
+				break;
+			case Person.WEST:
+			case Person.NORTHWEST:
+				x = map[i].y * -1;
+				y = map[i].x * -1;
+				break;
+			case Person.SOUTHWEST:
+				x = map[i].x * -1;
+				break;
+			case Person.NORTHEAST:
+				y = map[i].y * -1;
+				break;
+		}
+
+		sight.push( new Point( this._coord.x + x, this._coord.y + y ) );
 	}
 
 	return sight;
@@ -348,7 +399,14 @@ Person.prototype.walk = function(coord, callback) {
 		}
 
 		this._ap -= distance.costPerTile;
-		this._coord = distance.walkingDistance[i];
+
+		/** @type {Point} */
+		var point = distance.walkingDistance[i];
+
+		// change looking direction
+		this.direction = point;
+
+		this._coord = point;
 		World.draw();
 
 		if(++i >= distance.walkingDistance.length) onWalkingEnd.call(this);
@@ -756,5 +814,48 @@ Object.defineProperty(Person.prototype, "logName", {
 Object.defineProperty(Person.prototype, "isDead", {
 	get: function () {
 		return this._hp <= 0;
+	}
+});
+
+Object.defineProperty(Person.prototype, "direction", {
+	/**
+	 * @param {Point|Person.NORTH|Person.NORTHEAST|Person.EAST|Person.SOUTHEAST|Person.SOUTH|Person.SOUTHWEST|Person.WEST|Person.NORTHWEST} val
+	 */
+	set: function (val) {
+		if(val instanceof Point) {
+			var diagonal = this._coord.x - this._coord.y == 0 && val.x - val.y == 0;
+
+			if(diagonal) {
+				if(val.x > this._coord.x && val.y < this._coord.y) {
+					// north-east
+					this._direction = Person.NORTHEAST;
+				} else if(val.x > this._coord.x && val.y > this._coord.y) {
+					// south-east
+					this._direction = Person.SOUTHEAST;
+				} else if(val.x < this._coord.x && val.y > this._coord.y) {
+					// south-west
+					this._direction = Person.SOUTHWEST;
+				} else if(val.x < this._coord.x && val.y > this._coord.y) {
+					// north-west
+					this._direction = Person.NORTHWEST;
+				}
+			} else {
+				if(val.x == this._coord.x && val.y < this._coord.y) {
+					// north
+					this._direction = Person.NORTH;
+				} else if(val.x > this._coord.x && this._coord.y == val.y) {
+					// east
+					this._direction = Person.EAST;
+				} else if(val.x < this._coord.x && this._coord.y == val.y) {
+					// west
+					this._direction = Person.WEST;
+				} else if(val.x == this._coord.x && val.y > this._coord.y) {
+					// south
+					this._direction = Person.SOUTH;
+				}
+			}
+		} else {
+			this._direction = val;
+		}
 	}
 });
