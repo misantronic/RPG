@@ -52,7 +52,7 @@ Game.prototype._init = function() {
 	World.init();
 	World.selectedMerc = ivan;
 
-	ivan.walk(new Point(5, 5), function() {
+	ivan.walk(new Point(6, 5), function() {
 
 	});
 };
