@@ -71,5 +71,9 @@ Game.prototype._onHashChange = function(e) {
 			var person = World.getPerson(id);
 			console.log(person);
 			break;
+        case 'ammo':
+            var obstacle = World.getObstacle(new Point(1,2));
+                console.log(obstacle);
+            break;
 	}
 };
