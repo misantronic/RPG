@@ -56,8 +56,10 @@ World = {
 		var ob2 = new Obstacle(new Point(7, 6), 0.66);
 		var ob3 = new Obstacle(new Point(2, 3), 0.66);
 		var ob4 = new Obstacle(new Point(9, 5), 0.66);
+		var ob5 = new Obstacle(new Point(8, 3), 0.66);
+		var ob6 = new Obstacle(new Point(8, 4), 0.66);
 
-		World.OBSTACLES.push(ob1, ob2, ob3, ob4);
+		World.OBSTACLES.push(ob1, ob2, ob3, ob4, ob5, ob6);
 
 		this.draw();
 	},
@@ -139,7 +141,7 @@ World = {
 		this._drawObstacles = false;
 
 		if(this._drawSight) {
-			var sight = this._drawSight.calculateSight(), p, p2;
+			var sight = this._drawSight.calculateSight(), p;
 			for(var i=0; i < sight.length; i++) {
 				/** @param {Point} p */
 				p = sight[i];
@@ -147,12 +149,79 @@ World = {
 				y = (p.y - 1) * this.tileWidth;
 
 				if(p.obstacle) {
-					if (this._drawSight.direction == Person.SOUTHEAST) {
-						p2 = this._getPoint(sight, new Point(p.x+1,p.y+1));
-						if(p2) p2.color = '#CC0000';
-					} else if(this._drawSight.direction == Person.EAST) {
-						p2 = this._getPoint(sight, new Point(p.x+1,p.y));
-						if(p2) p2.color = '#CC0000';
+					function getAlpha(a, b) {
+						var c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+
+						// calculate alpha degree in triangle
+						var alpha = Math.round(Math.asin(a/c) * (180 / Math.PI));
+						if(alpha <= -90 || alpha >= 90) alpha = 0;
+
+						return alpha;
+					}
+
+					var p1 = new Point(),
+						p2 = new Point(),
+						p3 = new Point(),
+						a = 0, b = 0;
+
+					switch(this._drawSight.direction) {
+						case Person.NORTH:
+							a = p.x - this._drawSight.coord.x;
+							b = p.y - this._drawSight.coord.y;
+
+							p1 = new Point(p.x-1, p.y-1);
+							p2 = new Point(p.x+1, p.y-1);
+							p3 = new Point(p.x, p.y-1);
+							break;
+						case Person.EAST:
+							a = p.y - this._drawSight.coord.y;
+							b = p.x - this._drawSight.coord.x;
+
+							p1 = new Point(p.x+1, p.y+1);
+							p2 = new Point(p.x+1, p.y-1);
+							p3 = new Point(p.x+1, p.y);
+							break;
+						case Person.WEST:
+							a = p.y - this._drawSight.coord.y;
+							b = p.x - this._drawSight.coord.x;
+
+							p1 = new Point(p.x-1, p.y+1);
+							p2 = new Point(p.x-1, p.y-1);
+							p3 = new Point(p.x-1, p.y);
+							break;
+						case Person.SOUTH:
+							a = p.x - this._drawSight.coord.x;
+							b = p.y - this._drawSight.coord.y;
+
+							p1 = new Point(p.x+1, p.y+1);
+							p2 = new Point(p.x-1, p.y+1);
+							p3 = new Point(p.x, p.y+1);
+							break;
+						case Person.NORTHWEST:
+
+							break;
+						case Person.SOUTHWEST:
+
+							break;
+						case Person.SOUTHEAST:
+
+							break;
+						case Person.NORTHEAST:
+
+							break;
+					}
+
+					var alpha = getAlpha(a, b);
+					if(this._drawSight.coord.x > p.x) alpha *= -1;
+
+					console.log(p, alpha);
+
+					if(alpha >= 35) {
+						this._getPoint(sight, p1).color = '#CC0000';
+					} else if(alpha <= -35) {
+						this._getPoint(sight, p2).color = '#CC0000';
+					} else {
+						this._getPoint(sight, p3).color = '#CC0000';
 					}
 				}
 
@@ -177,7 +246,7 @@ World = {
 		for(var i=0; i < list.length; i++) {
 			if(list[i].x == point.x && list[i].y == point.y) return list[i];
 		}
-		return null;
+		return new Point();
 	},
 
 	/**

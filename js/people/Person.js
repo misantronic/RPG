@@ -159,7 +159,7 @@ Person.NORTHWEST 	= 'north-west';
  */
 Person.prototype._direction = Person.EAST;
 
-Person.prototype._sightRange = 5;
+Person.prototype._sightRange = 8;
 
 /**
  * @param {...Array} arguments items
@@ -356,7 +356,6 @@ Person.prototype.calculateSight = function() {
 
 		switch(this._direction) {
 			case Person.NORTH:
-				x = 1;
 				y *= -1;
 				break;
 			case Person.EAST:
@@ -886,6 +885,8 @@ Object.defineProperty(Person.prototype, "direction", {
 		} else {
 			this._direction = val;
 		}
+
+		World.draw();
 	},
 
 	get: function() {
