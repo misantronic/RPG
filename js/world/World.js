@@ -11,11 +11,12 @@ World = {
 	ctxPeople		: CanvasRenderingContext2D,
 	ctxSight		: CanvasRenderingContext2D,
 	ctxObstacles	: CanvasRenderingContext2D,
+	/** @type {Person} selectedMerc */
 	selectedMerc	: Merc,
 
 	_drawCoord		: true,
 	_drawObstacles	: true,
-	/** @type {Person} _drawSight */
+	/** @type {Boolean} _drawSight */
 	_drawSight		: null,
 
 	init: function() {
@@ -38,7 +39,7 @@ World = {
 		window.addEventListener("keydown", function(e) {
 			if(e.keyCode == 83 && ! this._drawSight) {
 				// show sight
-				this._drawSight = this.selectedMerc;
+				this._drawSight = true;
 				this.draw();
 			}
 		}.bind(this));
@@ -46,7 +47,7 @@ World = {
 		window.addEventListener("keyup", function(e) {
 			if(e.keyCode == 83) {
 				// hide sight
-				this._drawSight = null;
+				this._drawSight = false;
 				this.draw();
 			}
 		}.bind(this));
@@ -58,8 +59,16 @@ World = {
 		var ob4 = new Obstacle(new Point(9, 5), 0.66);
 		var ob5 = new Obstacle(new Point(8, 3), 0.66);
 		var ob6 = new Obstacle(new Point(8, 4), 0.66);
+		var ob7 = new Obstacle(new Point(4, 2), 0.66);
+		var ob8 = new Obstacle(new Point(2, 6), 0.66);
+		var ob9 = new Obstacle(new Point(5, 8), 0.66);
+		var ob10 = new Obstacle(new Point(5, 6), 0.66);
+		var ob11 = new Obstacle(new Point(7, 2), 0.66);
+		var ob12 = new Obstacle(new Point(6, 2), 0.66);
+		var ob13 = new Obstacle(new Point(2, 7), 0.66);
+		var ob14 = new Obstacle(new Point(3, 2), 0.66);
 
-		World.OBSTACLES.push(ob1, ob2, ob3, ob4, ob5, ob6);
+		World.OBSTACLES.push(ob1, ob2, ob3, ob4, ob5, ob6, ob7, ob8, ob9, ob10, ob11, ob12, ob13, ob14);
 
 		this.draw();
 	},
@@ -141,7 +150,7 @@ World = {
 		this._drawObstacles = false;
 
 		if(this._drawSight) {
-			var sight = this._drawSight.calculateSight(), p;
+			var sight = this.selectedMerc.calculateSight(), p;
 			for(var i=0; i < sight.length; i++) {
 				/** @param {Point} p */
 				p = sight[i];
@@ -164,61 +173,49 @@ World = {
 						p3 = new Point(),
 						a = 0, b = 0;
 
-					switch(this._drawSight.direction) {
-						case Person.NORTH:
-							a = p.x - this._drawSight.coord.x;
-							b = p.y - this._drawSight.coord.y;
-
-							p1 = new Point(p.x-1, p.y-1);
-							p2 = new Point(p.x+1, p.y-1);
-							p3 = new Point(p.x, p.y-1);
-							break;
+					switch(this.selectedMerc.direction) {
 						case Person.EAST:
-							a = p.y - this._drawSight.coord.y;
-							b = p.x - this._drawSight.coord.x;
+							a = p.y - this.selectedMerc.coord.y;
+							b = p.x - this.selectedMerc.coord.x;
 
 							p1 = new Point(p.x+1, p.y+1);
 							p2 = new Point(p.x+1, p.y-1);
 							p3 = new Point(p.x+1, p.y);
 							break;
 						case Person.WEST:
-							a = p.y - this._drawSight.coord.y;
-							b = p.x - this._drawSight.coord.x;
+							a = p.y - this.selectedMerc.coord.y;
+							b = p.x - this.selectedMerc.coord.x;
 
 							p1 = new Point(p.x-1, p.y+1);
 							p2 = new Point(p.x-1, p.y-1);
 							p3 = new Point(p.x-1, p.y);
 							break;
+						case Person.NORTH:
+							a = this.selectedMerc.coord.x - p.x;
+							b = p.y - this.selectedMerc.coord.y;
+
+							p1 = new Point(p.x-1, p.y-1);
+							p2 = new Point(p.x+1, p.y-1);
+							p3 = new Point(p.x, p.y-1);
+							break;
 						case Person.SOUTH:
-							a = p.x - this._drawSight.coord.x;
-							b = p.y - this._drawSight.coord.y;
+							a = p.x - this.selectedMerc.coord.x;
+							b = p.y - this.selectedMerc.coord.y;
 
 							p1 = new Point(p.x+1, p.y+1);
 							p2 = new Point(p.x-1, p.y+1);
 							p3 = new Point(p.x, p.y+1);
 							break;
-						case Person.NORTHWEST:
-
-							break;
-						case Person.SOUTHWEST:
-
-							break;
-						case Person.SOUTHEAST:
-
-							break;
-						case Person.NORTHEAST:
-
-							break;
 					}
 
 					var alpha = getAlpha(a, b);
-					if(this._drawSight.coord.x > p.x) alpha *= -1;
+					//if(this.selectedMerc.coord.x > p.x) alpha *= -1;
 
 					console.log(p, alpha);
 
-					if(alpha >= 35) {
+					if(alpha >= 34) {
 						this._getPoint(sight, p1).color = '#CC0000';
-					} else if(alpha <= -35) {
+					} else if(alpha <= -34) {
 						this._getPoint(sight, p2).color = '#CC0000';
 					} else {
 						this._getPoint(sight, p3).color = '#CC0000';
@@ -264,6 +261,11 @@ World = {
 			this.ctxCoord.strokeStyle = "#EEE";
 			this.ctxCoord.rect(x, y, this.tileWidth, this.tileWidth);
 			this.ctxCoord.stroke();
+
+			// draw field number
+			//this.ctxCoord.font = "11px sans-serif";
+			//this.ctxCoord.fillStyle = "#F1F1F1";
+			//this.ctxCoord.fillText("("+ coord.x +"/"+ coord.y +")", x, y - 5);
 		}
 
 		// look for people
@@ -282,7 +284,7 @@ World = {
 		// obstacles
 		if(this._drawObstacles) {
 			this.ctxObstacles.font = "11px sans-serif";
-			this.ctxObstacles.fillStyle = "#DDD";
+			this.ctxObstacles.fillStyle = "#CCC";
 
 			this.OBSTACLES.forEach(
 				/** @param {Obstacle} obstacle */
