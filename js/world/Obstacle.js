@@ -49,3 +49,10 @@ Object.defineProperty(Obstacle.prototype, "height", {
 		this._height = val;
 	}
 });
+
+Object.defineProperty(Obstacle.prototype, "shadowLength", {
+	/** @return {Number} */
+	get: function () {
+		return Math.round(this._height * 9);
+	}
+});
