@@ -18,6 +18,8 @@ function Point(x, y, obstacle) {
 Point.prototype = {
 	x: 0,
 	y: 0,
+	/** @type {Obstacle} obstacle **/
 	obstacle: null,
+	/** @type {String} color **/
 	color: '#00CC00'
 };
