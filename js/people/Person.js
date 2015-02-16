@@ -159,7 +159,7 @@ Person.NORTHWEST 	= 'north-west';
  */
 Person.prototype._direction = Person.EAST;
 
-Person.prototype._sightRange = 8;
+Person.prototype._sightRange = 14;
 
 /**
  * @param {...Array} arguments items
