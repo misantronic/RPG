@@ -52,8 +52,8 @@ Game.prototype._init = function() {
 	World.init();
 	World.selectedMerc = ivan;
 
-	ivan.walk(new Point(5, 4), function() {
-		ivan.direction = Person.NORTHEAST;
+	ivan.walk(new Point(5, 5), function() {
+		ivan.direction = Person.EAST;
 	});
 };
 
