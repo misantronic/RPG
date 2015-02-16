@@ -150,14 +150,23 @@ World = {
 		this._drawObstacles = false;
 
 		if(this._drawSight) {
-			var sight = this.selectedMerc.calculateSight(), p;
+			/** @type {Array} sight **/
+			var sight = this.selectedMerc.calculateSight();
+			/** @param {Point} p */
+			var p;
+			/** @type {Obstacle} obstacle **/
+			var obstacle;
+			var shadowLength = 1;
+
 			for(var i=0; i < sight.length; i++) {
-				/** @param {Point} p */
 				p = sight[i];
 				x = (p.x - 1) * this.tileWidth;
 				y = (p.y - 1) * this.tileWidth;
+				obstacle = p.obstacle;
 
-				if(p.obstacle) {
+				if(obstacle) {
+					shadowLength = obstacle.shadowLength;
+
 					function getAlpha(a, b) {
 						var c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
 
@@ -168,9 +177,9 @@ World = {
 						return alpha;
 					}
 
-					var p1 = new Point(),
-						p2 = new Point(),
-						p3 = new Point(),
+					var p1 = [],
+						p2 = [],
+						p3 = [],
 						a = 0, b = 0;
 
 					switch(this.selectedMerc.direction) {
@@ -178,47 +187,58 @@ World = {
 							a = p.y - this.selectedMerc.coord.y;
 							b = p.x - this.selectedMerc.coord.x;
 
-							p1 = new Point(p.x+1, p.y+1);
-							p2 = new Point(p.x+1, p.y-1);
-							p3 = new Point(p.x+1, p.y);
+							p1 = this._getPointsAdditions(p, 1, 1, shadowLength); // new Point(p.x+1, p.y+1);
+							p2 = this._getPointsAdditions(p, 1, -1, shadowLength); // new Point(p.x+1, p.y-1);
+							p3 = this._getPointsAdditions(p, 1, 0, shadowLength); // new Point(p.x+1, p.y);
 							break;
 						case Person.WEST:
 							a = p.y - this.selectedMerc.coord.y;
 							b = p.x - this.selectedMerc.coord.x;
 
-							p1 = new Point(p.x-1, p.y+1);
-							p2 = new Point(p.x-1, p.y-1);
-							p3 = new Point(p.x-1, p.y);
+							p1 = this._getPointsAdditions(p, -1, 1, shadowLength); // new Point(p.x-1, p.y+1);
+							p2 = this._getPointsAdditions(p, -1, -1, shadowLength); // new Point(p.x-1, p.y-1);
+							p3 = this._getPointsAdditions(p, -1, 0, shadowLength); // new Point(p.x-1, p.y);
 							break;
 						case Person.NORTH:
 							a = this.selectedMerc.coord.x - p.x;
 							b = p.y - this.selectedMerc.coord.y;
 
-							p1 = new Point(p.x-1, p.y-1);
-							p2 = new Point(p.x+1, p.y-1);
-							p3 = new Point(p.x, p.y-1);
+							p1 = this._getPointsAdditions(p, -1, -1, shadowLength); // new Point(p.x-1, p.y-1);
+							p2 = this._getPointsAdditions(p, 1, -1, shadowLength); // new Point(p.x+1, p.y-1);
+							p3 = this._getPointsAdditions(p, 0, -1, shadowLength); // new Point(p.x, p.y-1);
 							break;
 						case Person.SOUTH:
 							a = p.x - this.selectedMerc.coord.x;
 							b = p.y - this.selectedMerc.coord.y;
 
-							p1 = new Point(p.x+1, p.y+1);
-							p2 = new Point(p.x-1, p.y+1);
-							p3 = new Point(p.x, p.y+1);
+							p1 = this._getPointsAdditions(p, 1, 1, shadowLength); // new Point(p.x+1, p.y+1);
+							p2 = this._getPointsAdditions(p, -1, 1, shadowLength); // new Point(p.x-1, p.y+1);
+							p3 = this._getPointsAdditions(p, 0, 1, shadowLength); // new Point(p.x, p.y+1);
 							break;
 					}
 
 					var alpha = getAlpha(a, b);
-					//if(this.selectedMerc.coord.x > p.x) alpha *= -1;
 
 					console.log(p, alpha);
 
+					/** @type {Array} points **/
+					var points;
+
 					if(alpha >= 34) {
-						this._getPoint(sight, p1).color = '#CC0000';
+						points = this._getPoints(sight, p1);
 					} else if(alpha <= -34) {
-						this._getPoint(sight, p2).color = '#CC0000';
+						points = this._getPoints(sight, p2);
 					} else {
-						this._getPoint(sight, p3).color = '#CC0000';
+						points = this._getPoints(sight, p3);
+					}
+
+					console.log("points", points);
+
+					/** @type {Point} point */
+					var point;
+					for(var j=0; j < points.length; j++) {
+						point = points[j];
+						point.color = '#CC0000';
 					}
 				}
 
@@ -243,7 +263,46 @@ World = {
 		for(var i=0; i < list.length; i++) {
 			if(list[i].x == point.x && list[i].y == point.y) return list[i];
 		}
-		return new Point();
+		return null;
+	},
+
+	/**
+	 *
+	 * @param {Array} list
+	 * @param {Array} points
+	 * @returns {Array}
+	 * @private
+	 */
+	_getPoints: function(list, points) {
+		/** @type {Point} point **/
+		var point;
+		var newPoints = [];
+		for(var i=0; i < points.length; i++) {
+			point = this._getPoint(list, points[i]);
+			if(point) newPoints.push(point);
+		}
+
+		return newPoints;
+	},
+
+	/**
+	 *
+	 * @param {Point} point
+	 * @param {number} addX
+	 * @param {number} addY
+	 * @param {number} length
+	 * @private
+	 */
+	_getPointsAdditions: function(point, addX, addY, length) {
+		var points = [];
+		for(var i=0; i < length; i++) {
+			points.push( new Point(point.x + addX, point.y + addY) );
+
+			addX += addX == 0 ? 0 : addX > 0 ? 1 : -1;
+			addY += addY == 0 ? 0 : addY > 0 ? 1 : -1;
+		}
+
+		return points;
 	},
 
 	/**
