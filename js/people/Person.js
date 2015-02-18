@@ -152,6 +152,8 @@ Person.SOUTHWEST 	= 'south-west';
 Person.WEST  		= 'west';
 Person.NORTHWEST 	= 'north-west';
 
+Person.DEFAULT_SIGHT_RANGE = 14;
+
 /**
  *
  * @type {Person.NORTH|Person.NORTHEAST|Person.EAST|Person.SOUTHEAST|Person.SOUTH|Person.SOUTHWEST|Person.WEST|Person.NORTHWEST}
@@ -159,7 +161,7 @@ Person.NORTHWEST 	= 'north-west';
  */
 Person.prototype._direction = Person.EAST;
 
-Person.prototype._sightRange = 14;
+Person.prototype._sightRange = Person.DEFAULT_SIGHT_RANGE;
 
 /**
  * @param {...Array} arguments items

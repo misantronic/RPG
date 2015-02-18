@@ -53,6 +53,6 @@ Object.defineProperty(Obstacle.prototype, "height", {
 Object.defineProperty(Obstacle.prototype, "shadowLength", {
 	/** @return {Number} */
 	get: function () {
-		return Math.round(this._height * 9);
+		return this._height == 1 ? Person.DEFAULT_SIGHT_RANGE : Math.round(this._height * 9);
 	}
 });
